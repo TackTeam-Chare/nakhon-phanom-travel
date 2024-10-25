@@ -54,6 +54,7 @@ const EditPlaceModal = ({ id, isOpen, onClose, onSuccess }) => {
     control,
     name: "operating_hours"
   })
+
   const [isLoading, setIsLoading] = useState(true);
   const [districts, setDistricts] = useState([])
   const [categories, setCategories] = useState([])
@@ -73,18 +74,6 @@ const EditPlaceModal = ({ id, isOpen, onClose, onSuccess }) => {
       setSelectedCategory("สถานที่ท่องเที่ยว");
     }
   }, [watch("category_name")]);
-  
-  useEffect(() => {
-    const fetchSeasons = async () => {
-      try {
-        const seasonsData = await getSeasons();
-        setSeasons(seasonsData.map(season => ({ label: season.name, value: season.id }))); // Format for react-select
-      } catch (error) {
-        console.error("Error fetching seasons:", error);
-      }
-    };
-    fetchSeasons();
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,13 +92,15 @@ const EditPlaceModal = ({ id, isOpen, onClose, onSuccess }) => {
         setSeasons(formattedSeasons);
   
         // Only set selected seasons if `placeData.season_ids` exists
-        if (placeData.season_ids && placeData.season_ids.length > 0) {
-          setSelectedSeasons(
-            placeData.season_ids.map(seasonId =>
-              formattedSeasons.find(season => season.value === seasonId)
-            )
+        if (placeData.season_ids) {
+          const seasonIdArray = placeData.season_ids.split(',').map(Number); // แปลงเป็น array ของ numbers
+          const matchedSeasons = seasonIdArray.map((id) =>
+            formattedSeasons.find((season) => season.value === id)
           );
+          console.log('Matched Seasons:', matchedSeasons);
+          setSelectedSeasons(matchedSeasons); // เก็บฤดูกาลที่ตรงกับ season_ids
         }
+  
   
         setDistricts(districtsData);
         setCategories(categoriesData);
@@ -292,17 +283,7 @@ const EditPlaceModal = ({ id, isOpen, onClose, onSuccess }) => {
     const selectedValue = event.target.value;
     setSelectedCategory(selectedValue);
   };
-  // const handleCategoryChange = (event) => {
-  //   const selectedValue = event.target.value;
-  //   setSelectedCategory(selectedValue);
-  
-  //   // Check if the selected category is "สถานที่ท่องเที่ยว"
-  //   if (selectedValue === "สถานที่ท่องเที่ยว") {
-  //     // This triggers the rendering of the seasons select immediately
-  //     setSelectedCategory("สถานที่ท่องเที่ยว");
-  //   }
-  // };
-  
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>

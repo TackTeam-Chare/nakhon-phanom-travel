@@ -101,20 +101,23 @@ const PlaceDetailsModal = ({ id, isOpen, onClose, onSuccess }) => {
         setCategories(categoriesData);
   
         // จัดรูปแบบข้อมูลฤดูกาล
-        const formattedSeasons = seasonsData.map((season) => ({
-          label: season.name,
-          value: season.id,
-        }));
-        setSeasons(formattedSeasons);
-  
-        // ตั้งค่า "selectedSeasons" หากข้อมูล season_ids มีอยู่
-        if (placeData.season_ids && placeData.season_ids.length > 0) {
-          setSelectedSeasons(
-            placeData.season_ids.map((seasonId) =>
-              formattedSeasons.find((season) => season.value === seasonId)
-            )
-          );
-        }
+      const formattedSeasons = seasonsData.map((season) => ({
+        label: season.name,
+        value: season.id,
+      }));
+      
+      setSeasons(formattedSeasons); // เก็บฤดูกาลทั้งหมดใน state
+      console.log('Season IDs:', placeData.season_ids);
+
+        // จัดการ selectedSeasons โดยใช้ season_ids จาก placeData
+      if (placeData.season_ids) {
+        const seasonIdArray = placeData.season_ids.split(',').map(Number); // แปลงเป็น array ของ numbers
+        const matchedSeasons = seasonIdArray.map((id) =>
+          formattedSeasons.find((season) => season.value === id)
+        );
+        console.log('Matched Seasons:', matchedSeasons);
+        setSelectedSeasons(matchedSeasons); // เก็บฤดูกาลที่ตรงกับ season_ids
+      }
   
         // ตั้งค่า default values ของฟอร์ม
         setValue("name", placeData.name);
@@ -127,7 +130,6 @@ const PlaceDetailsModal = ({ id, isOpen, onClose, onSuccess }) => {
         setValue("season_id", placeData.season_id || "");
         setValue("operating_hours", placeData.operating_hours || []);
         setValue("published", placeData.published === 1 ? 1 : 0);
-  
         setExistingImages(placeData.images || []);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -415,6 +417,7 @@ const PlaceDetailsModal = ({ id, isOpen, onClose, onSuccess }) => {
   </div>
 
   {selectedCategory === "สถานที่ท่องเที่ยว" && (
+  selectedSeasons.length > 0 ? (
     <Controller
       control={control}
       name="season_id"
@@ -426,11 +429,18 @@ const PlaceDetailsModal = ({ id, isOpen, onClose, onSuccess }) => {
           classNamePrefix="select"
           value={selectedSeasons}
           placeholder="เลือกฤดูกาล"
-          disabled
+          isDisabled // ปิดการแก้ไข input
         />
       )}
     />
-  )}
+  ) : (
+    // แสดงข้อความหากไม่มีฤดูกาล
+    <p className="text-sm text-gray-500">
+      ไม่มีข้อมูลฤดูกาลสำหรับสถานที่นี้
+    </p>
+  )
+)}
+
 
   <div className="relative z-0 w-full mb-6 group">
     <div className="flex items-center">
