@@ -81,7 +81,13 @@ const CurrentlyOpenTouristEntities = ({ latitude, longitude }) => {
                       <h3 className="text-lg font-bold  mb-2">
                         {place.name}
                       </h3>
+                      <p className="text-gray-600 line-clamp-2">
+                      {place.description}
+                    </p>
                     </div>
+                    <p className="text-orange-500 font-bold flex items-center">
+                    {place.district_name}
+                  </p>
                   </div>
                 </div>
               </Link>

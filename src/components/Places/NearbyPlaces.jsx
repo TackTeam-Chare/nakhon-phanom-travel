@@ -6,12 +6,9 @@ import "react-multi-carousel/lib/styles.css";
 import { fetchPlacesNearbyByCoordinatesRealTime } from "@/services/user/api";
 import Image from "next/image";
 import Link from "next/link";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+
 import { FaRoute } from "react-icons/fa";
 import { FaHotel, FaStore, FaUtensils, FaLandmark } from "react-icons/fa";
-
-const MySwal = withReactContent(Swal);
 
 const categoryIcons = {
   "สถานที่ท่องเที่ยว": { icon: <FaLandmark />, color: "text-blue-500" },
@@ -149,15 +146,19 @@ const NearbyPlaces = () => {
                       <h3 className="text-lg font-semibold mb-2">
                         {place.name}
                       </h3>
-                      <p className={`flex items-center font-bold ${category.color}`}>
+                      <p className="text-gray-600 line-clamp-2">
+                      {place.description}
+                    </p>
+                    </div>
+                      {/* <p className={`flex items-center font-bold ${category.color}`}>
                         {category.icon}
                         <span className="ml-2">{place.category_name}</span>
-                      </p>
-                      <p className="text-orange-500 font-bold flex items-center">
-                        <FaRoute className="mr-2" />
-                        ระยะห่าง {convertMetersToKilometers(place.distance)}{" "}
-                      </p>
-                    </div>
+                      </p> */}
+                <p className="text-orange-500 font-bold flex items-center justify-end m-2 mt-5">
+  <FaRoute className="mr-2" />
+  {convertMetersToKilometers(place.distance)}{" "}
+</p>
+
                   </div>
                 </div>
               </Link>

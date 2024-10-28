@@ -175,7 +175,7 @@ const PlaceIndexPage = () => {
                 setEditPlaceId(row.original.id.toString());
                 setIsEditModalOpen(true);
               }}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out flex items-center"
+              className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300 ease-in-out flex items-center"
             >
               <FontAwesomeIcon icon={faEdit} className="mr-2" />
               แก้ไข
@@ -236,38 +236,39 @@ const PlaceIndexPage = () => {
           </button>
 
           <div className="flex items-center space-x-6">
-            <div className="relative">
-              <select
-                value={selectedCategory || ""}
-                onChange={handleCategoryChange}
-                className="p-2 border border-gray-300 rounded-md appearance-none cursor-pointer"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <option value="">-- เลือกประเภทสถานที่ --</option>
-                <option value="1">สถานที่ท่องเที่ยว</option>
-                <option value="2">ที่พัก</option>
-                <option value="3">ร้านอาหาร</option>
-                <option value="4">ร้านค้าของฝาก</option>
-              </select>
-              <FontAwesomeIcon
-                icon={isDropdownOpen ? faChevronUp : faChevronDown}
-                className="absolute right-2 top-3 text-gray-600"
-              />
-            </div>
+  <div className="relative">
+    <select
+      value={selectedCategory || ""}
+      onChange={handleCategoryChange}
+      className="block w-full p-2 pl-3 pr-10 text-base text-gray-700 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-200 ease-in-out cursor-pointer"
+      onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Toggle dropdown open state
+    >
+      <option value="">-- เลือกประเภทสถานที่ --</option>
+      <option value="1">สถานที่ท่องเที่ยว</option>
+      <option value="2">ที่พัก</option>
+      <option value="3">ร้านอาหาร</option>
+      <option value="4">ร้านค้าของฝาก</option>
+    </select>
+    <FontAwesomeIcon
+      icon={isDropdownOpen ? faChevronUp : faChevronDown}
+      className={`absolute right-3 top-3 text-gray-600 transition-transform duration-200 ${isDropdownOpen ? 'transform rotate-180' : ''}`}
+    />
+  </div>
 
-            <div className="relative">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="absolute left-3 top-3 text-gray-400"
-              />
-              <input
-                value={globalFilter || ""}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                placeholder="ค้นหา..."
-                className="p-2 pl-10 border border-gray-300 rounded-md"
-              />
-            </div>
-          </div>
+  <div className="relative">
+    <FontAwesomeIcon
+      icon={faSearch}
+      className="absolute left-3 top-3 text-gray-400"
+    />
+    <input
+      value={globalFilter || ""}
+      onChange={(e) => setGlobalFilter(e.target.value)}
+      placeholder="ค้นหา..."
+      className="block w-full p-2 pl-10 pr-4 text-base text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-200 ease-in-out"
+    />
+  </div>
+</div>
+
         </div>
 
         <div className="overflow-x-auto">

@@ -80,7 +80,7 @@ const RealTimeSeasonalAttractions = () => {
                       {attraction.description}
                     </p>
                   </div>
-                  <p className="text-orange-500 font-bold flex items-center">
+                  <p className="text-orange-500 font-bold flex items-center mt-2">
                     {attraction.district_name}
                   </p>
                 </div>
