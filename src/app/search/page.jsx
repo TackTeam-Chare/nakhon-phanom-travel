@@ -165,7 +165,7 @@ const GeocodingSearchPage = () => {
     if (field === "category") {
       const selectedCategory = filters.categories.find((cat) => cat.id === value);
       setSelectedCategory(selectedCategory?.name || null);
-  
+      setIsCategoryDropdownOpen(false);
       const isTouristCategory = selectedCategory?.name === "สถานที่ท่องเที่ยว";
       setIsSeasonEnabled(isTouristCategory);
   
@@ -191,7 +191,7 @@ const GeocodingSearchPage = () => {
       setSelectedDay(value);
     }
   };
-  
+
 
    const handleCurrentLocationClick = () => {
     if (!navigator.geolocation) {
@@ -346,7 +346,7 @@ const GeocodingSearchPage = () => {
           className={`border-2 border-orange-500 text-orange-500 rounded-full py-1 px-3 flex items-center justify-center ${!isSeasonEnabled ? "opacity-50 cursor-not-allowed" : ""}`}
           disabled={!isSeasonEnabled} // Disable if the season is not enabled
         >
-          <FaLeaf className="mr-2" /> สถานที่ตามฤดูกาล
+          <FaLeaf className="mr-2" /> สถานที่ท่องเที่ยวตามฤดูกาล
           {isSeasonDropdownOpen ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
         </button>
         <button

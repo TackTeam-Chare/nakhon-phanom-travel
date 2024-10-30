@@ -35,9 +35,10 @@ const CreatePlaceModal = ({ isOpen, onClose,onSuccess  }) => {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      operating_hours: [
-        { day_of_week: "", opening_time: "", closing_time: "" }
-      ],
+      // operating_hours: [
+      //   { day_of_week: "", opening_time: "", closing_time: "" }
+      // ],
+      operating_hours: [], // เริ่มต้นเป็น array ว่าง
       published: true,
       season_ids: [], 
     }
@@ -611,7 +612,7 @@ const CreatePlaceModal = ({ isOpen, onClose,onSuccess  }) => {
           onClick={() => toggleDropdown("operatingHours")}
           className="block py-2 px-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-0 focus:border-orange-600 peer"
         >
-          <option value="">วันในสัปดาห์</option>
+          <option value="">เลือกวัน</option>
           <option value="Sunday">วันอาทิตย์</option>
           <option value="Monday">วันจันทร์</option>
           <option value="Tuesday">วันอังคาร</option>
@@ -620,7 +621,7 @@ const CreatePlaceModal = ({ isOpen, onClose,onSuccess  }) => {
           <option value="Friday">วันศุกร์</option>
           <option value="Saturday">วันเสาร์</option>
           <option value="Everyday">ทุกวัน</option>
-          <option value="ExceptHolidays">ยกเว้นวันหยุดนักขัตฤกษ์</option>
+          <option value="ExceptHolidays">ยกเว้นวันหยุดเสาร์-อาทิตย์</option>
         </select>
         <FontAwesomeIcon
           icon={dropdownOpen.operatingHours ? faChevronUp : faChevronDown}

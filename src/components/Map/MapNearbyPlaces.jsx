@@ -221,10 +221,10 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
           <FaTag className="mr-2" />
           {selectedEntity.category_name}
         </p>
-        <p className="text-orange-500 font-bold flex items-center">
+        {/* <p className="text-orange-500 font-bold flex items-center">
           <FaRoute className="mr-2" />
           ระยะห่าง {convertMetersToKilometers(selectedEntity.distance)} กิโลเมตร
-        </p>
+        </p> */}
 
         <div className="flex space-x-2 mt-4">
           {/* ปุ่มนำทางไปยัง Google Maps */}

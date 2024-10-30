@@ -28,7 +28,7 @@ import {
   FaChevronUp,
   FaRegClock,
   FaArrowRight,
-  FaRoute,
+  // FaRoute,
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
@@ -61,20 +61,15 @@ const responsive = {
   },
 };
 
-const highlightNoteInDescription = (description) => {
-  const noteText = "หมายเหตุ: รูปภาพจากแหล่งภายนอก";
-  if (description.includes(noteText)) {
-    const parts = description.split(noteText);
-    return (
-      <>
-        {parts[0]}
-        <span className="font-bold text-red-500">{noteText}</span>
-        {parts[1]}
-      </>
-    );
-  }
-  return description;
-};
+// ฟังก์ชันช่วยแสดงหมายเหตุในคำอธิบาย
+const highlightNoteInDescription = (description) => (
+  <>
+    {description}
+    <p className="text-sm text-gray-500 mt-2">
+      <span className="font-bold text-red-500">หมายเหตุ:</span> รูปภาพประกอบอาจนำมาจากแหล่งภายนอก เช่น <em>Google Maps</em> หรือ <em>เพจ Facebook</em>
+    </p>
+  </>
+);
 
 const getSeasonIcon = (seasonName) => {
   switch (seasonName) {
@@ -137,7 +132,7 @@ const removeDuplicateImages = (images) => {
   return Array.from(uniqueImages.values());
 };
 
-const convertMetersToKilometers = (meters) => (meters / 1000).toFixed(2);
+// const convertMetersToKilometers = (meters) => (meters / 1000).toFixed(2);
 
 const getCurrentTimeInThailand = () => {
   const now = new Date();

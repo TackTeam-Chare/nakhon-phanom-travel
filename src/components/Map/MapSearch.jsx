@@ -306,10 +306,10 @@ const MapSearch = ({
                 <FaTag className="mr-2" />
                 {selectedPlace.category_name}
               </p>
-              <p className="text-orange-500 font-bold flex items-center">
+              {/* <p className="text-orange-500 font-bold flex items-center">
                 <FaRoute className="mr-2" />
                 ระยะห่าง {convertMetersToKilometers(selectedPlace.distance)} กิโลเมตร
-              </p>
+              </p> */}
 
               <div className="flex space-x-2 mt-4">
                 <a
