@@ -53,59 +53,73 @@ const NearbyPlaces = () => {
   const [longitude, setLongitude] = useState(null);
 
   useEffect(() => {
+    // ฟังก์ชันสำหรับดึงตำแหน่งผู้ใช้
     const getUserLocation = () => {
+      // ตรวจสอบว่าเบราว์เซอร์รองรับ Geolocation หรือไม่
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
+          // ถ้าดึงตำแหน่งสำเร็จ จะบันทึกตำแหน่งลงใน state
           (position) => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            
-            // Set state with the fetched coordinates
+            const latitude = position.coords.latitude; // ดึงค่าละติจูด
+            const longitude = position.coords.longitude; // ดึงค่าลองจิจูด
+  
+            // บันทึกพิกัดใน state ด้วย setLatitude และ setLongitude
             setLatitude(latitude);
             setLongitude(longitude);
-            
-            // Log the user's location to the console
+  
+            // แสดงข้อมูลพิกัดใน console สำหรับ debug
             console.log(`User's location: Latitude ${latitude}, Longitude ${longitude}`);
           },
+          // จัดการข้อผิดพลาด ถ้าไม่สามารถดึงตำแหน่งผู้ใช้ได้
           (error) => {
-            console.error("Error fetching user location:", error);
+            console.error("Error fetching user location:", error); // แสดงข้อผิดพลาดใน console
           }
         );
       } else {
+        // แสดงข้อความใน console ถ้าเบราว์เซอร์ไม่รองรับ Geolocation
         console.log("เบราว์เซอร์ของคุณไม่รองรับการระบุตำแหน่ง");
       }
     };
   
+    // เรียกใช้ฟังก์ชัน getUserLocation เมื่อ component ถูก mount
     getUserLocation();
-  }, []);
-  
+  }, []); // useEffect นี้จะทำงานเพียงครั้งเดียวเมื่อ component ถูก mount
   
 
   useEffect(() => {
+    // ฟังก์ชันสำหรับดึงข้อมูลสถานที่ใกล้เคียงตามพิกัด
     const getNearbyPlaces = async () => {
+      // ตรวจสอบว่าพิกัดไม่เป็น null ก่อนเรียก API
       if (latitude !== null && longitude !== null) {
         try {
+          // เรียกใช้ API เพื่อดึงข้อมูลสถานที่ใกล้เคียงตามพิกัดผู้ใช้
           const data = await fetchPlacesNearbyByCoordinatesRealTime(
             latitude,
             longitude
           );
+  
+          // ถ้าไม่พบสถานที่ใกล้เคียง จะแสดงข้อความใน console
           if (data.length === 0) {
             console.log("ไม่มีสถานที่ใกล้เคียง");
           }
+  
+          // บันทึกข้อมูลสถานที่ลงใน state ด้วย setPlaces
           setPlaces(data);
         } catch (error) {
-          console.error("Error fetching places nearby by coordinates:", error);
+          // จัดการข้อผิดพลาด ถ้าไม่สามารถดึงข้อมูลได้
           console.error("Error fetching places nearby by coordinates:", error);
         }
       }
     };
-
+  
+    // เรียกใช้ฟังก์ชัน getNearbyPlaces ทุกครั้งที่ latitude หรือ longitude เปลี่ยนแปลง
     getNearbyPlaces();
-  }, [latitude, longitude]);
+  }, [latitude, longitude]); // useEffect จะทำงานใหม่เมื่อ latitude หรือ longitude เปลี่ยน
 
   if (places.length === 0) {
-    return null;
+    return null; // ถ้าไม่มีข้อมูลสถานที่ใกล้เคียง จะไม่แสดงอะไรเลย
   }
+  
 
   return (
     <div className="container mx-auto mt-10 mb-10 px-4">

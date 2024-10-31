@@ -130,18 +130,18 @@ const Carousel = () => {
                 {slide.description}
               </p>
               <p
-                className="absolute bottom-4 right-4 text-base md:text-md text-white"
+                className="absolute bottom-4 left-10 text-base md:text-md text-white "
                 style={{ maxWidth: "300px" }}
               >
-                รูปภาพจาก:{" "}
-                <a
+                รูปภาพ:{slide.imageUrl}
+                {/* <a
                   href={slide.imageUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline "
                 >
                   ดูแหล่งที่มา
-                </a>
+                </a> */}
               </p>
             </div>
           </div>

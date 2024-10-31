@@ -30,7 +30,7 @@ import {
 } from "@/services/admin/dashboard/general/routes";
 import Image from "next/image";
 import { deletePlace } from "@/services/admin/delete";
-import PlaceDetailsModal from "@/components/Dashboard/Modal/Views/PlaceDetailsModal";
+import PlaceDetailsModal from "@/components/Dashboard/Modal/Details/PlaceDetailsModal";
 import AddPlacesModal from "@/components/Dashboard/Modal/Add/AddPlacesModal";
 import EditPlaceModal from "@/components/Dashboard/Modal/Edit/EditPlaceModal";
 import MySwal from "sweetalert2";

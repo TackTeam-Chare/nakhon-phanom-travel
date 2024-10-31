@@ -29,47 +29,57 @@ const MapSearch = ({
 
   // ฟังก์ชันจัดการเมื่อคลิกบนแผนที่
   const handleMapClick = (event) => {
-    const { latLng } = event;
-    const clickedLat = latLng.lat();
-    const clickedLng = latLng.lng();
-
-    // ลบวงกลมเก่าและสร้างวงกลมใหม่
+    
+    // ดึงพิกัดที่ผู้ใช้คลิกบนแผนที่
+    const { latLng } = event; 
+    const clickedLat = latLng.lat(); // ดึงค่า latitude จากพิกัดที่คลิก
+    const clickedLng = latLng.lng(); // ดึงค่า longitude จากพิกัดที่คลิก
+  
+    // บันทึกตำแหน่งที่คลิกลงใน state
     setClickLocation({ lat: clickedLat, lng: clickedLng });
-
-    // เรียก API เพื่อดึงสถานที่ใกล้เคียง
+  
+    // เรียก API เพื่อดึงข้อมูลสถานที่ใกล้เคียงจากพิกัดที่คลิก
     fetchNearbyPlaces(clickedLat, clickedLng, radius);
   };
 
   const calculateRoutes = useCallback((origin, destination) => {
+    // ตรวจสอบว่า Google Maps API ถูกโหลดแล้วหรือยัง
     if (!isLoaded || !window.google || !window.google.maps) return;
-
+  
+    // สร้าง instance ของ DirectionsService เพื่อคำนวณเส้นทาง
     const directionsService = new window.google.maps.DirectionsService();
+  
+    // คำนวณเส้นทางระหว่าง origin และ destination
     directionsService.route(
       {
-        origin,
-        destination: {
-          lat: Number(destination.latitude),
-          lng: Number(destination.longitude)
+        origin, // จุดเริ่มต้นของเส้นทาง (userLocation)
+        destination: { 
+          lat: Number(destination.latitude), // ละติจูดของจุดหมายปลายทาง
+          lng: Number(destination.longitude) // ลองจิจูดของจุดหมายปลายทาง
         },
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: google.maps.TravelMode.DRIVING, // โหมดการเดินทาง (ขับรถ)
       },
       (result, status) => {
+        // ถ้าคำนวณเส้นทางสำเร็จ ให้บันทึกผลลัพธ์ลงใน state
         if (status === google.maps.DirectionsStatus.OK) {
           setDirections(result);
         } else {
-          console.error(`Error fetching directions: ${status}`);
+          console.error(`Error fetching directions: ${status}`); // แสดงข้อผิดพลาดใน console
         }
       }
     );
-  }, [isLoaded]);
+  }, [isLoaded]); // ฟังก์ชันนี้จะถูกสร้างใหม่เมื่อ isLoaded เปลี่ยนแปลง
 
   useEffect(() => {
+    // เมื่อ mapRef และตำแหน่งผู้ใช้พร้อม จะย้ายตำแหน่งแผนที่ไปยังตำแหน่งของผู้ใช้
     if (mapRef.current && userLocation) {
       mapRef.current.panTo(userLocation);
     }
-  }, [userLocation]);
+  }, [userLocation]); // useEffect จะทำงานเมื่อ userLocation เปลี่ยนแปลง
+  
 
   useEffect(() => {
+    // ถ้าข้อมูลพร้อมและมีสถานที่ใกล้เคียงหรือผลลัพธ์การค้นหา จะคำนวณเส้นทาง
     if (
       isLoaded &&
       userLocation &&
@@ -77,10 +87,10 @@ const MapSearch = ({
     ) {
       calculateRoutes(userLocation, searchResults, nearbyPlaces);
     }
-  }, [isLoaded, userLocation, searchResults, nearbyPlaces, calculateRoutes]);
+  }, [isLoaded, userLocation, searchResults, nearbyPlaces, calculateRoutes]); // useEffect จะทำงานเมื่อค่าใดๆ ใน dependency เปลี่ยน
 
   if (!isLoaded) {
-    return null;
+    return null;  // ถ้ายังโหลด Google Maps API ไม่เสร็จ จะไม่แสดงผลอะไรเลย
   }
 
   const mapStyles = [

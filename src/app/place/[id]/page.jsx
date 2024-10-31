@@ -135,84 +135,114 @@ const removeDuplicateImages = (images) => {
 // const convertMetersToKilometers = (meters) => (meters / 1000).toFixed(2);
 
 const getCurrentTimeInThailand = () => {
+  // สร้างออบเจ็กต์ Date สำหรับเวลาในปัจจุบัน (เวลาท้องถิ่นของระบบ)
   const now = new Date();
+
+  // คำนวณเวลาใน UTC (ลบด้วย Timezone Offset ของระบบปัจจุบัน) 
   const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
+
+  // เพิ่ม 7 ชั่วโมง (7 * 60 * 60 * 1000 มิลลิวินาที) เพื่อแปลงเป็นเวลาไทย (UTC+7)
   const thailandTime = new Date(utcTime + 7 * 60 * 60 * 1000);
+
+  // ส่งค่าเวลาในไทยกลับไป
   return thailandTime;
 };
 
 const isOpenNow = (operatingHours) => {
+  // ถ้า `operatingHours` ไม่มีข้อมูล หรือมีความยาวเป็น 0 ให้ return false ทันที (แปลว่าไม่เปิด)
   if (!operatingHours || operatingHours.length === 0) return false;
 
+  // เรียกฟังก์ชัน `getCurrentTimeInThailand()` เพื่อรับเวลาไทยปัจจุบัน
   const now = getCurrentTimeInThailand();
-  const currentDay = now.getDay(); // 0 for Sunday, 1 for Monday, etc.
-  const currentTime = now.getHours() * 100 + now.getMinutes(); // Time in HHMM format
 
+  // ดึงค่าของวันปัจจุบัน (0 สำหรับวันอาทิตย์, 1 สำหรับวันจันทร์, ... , 6 สำหรับวันเสาร์)
+  const currentDay = now.getDay(); 
+
+  // แปลงเวลาเป็นรูปแบบ HHMM (เช่น 14:30 จะกลายเป็น 1430)
+  const currentTime = now.getHours() * 100 + now.getMinutes(); 
+
+  // ค้นหาเวลาเปิด-ปิดสำหรับวันปัจจุบัน หรือสำหรับ "Everyday" (เปิดทุกวัน)
   const todayOperatingHours = operatingHours.find((hours) => {
     return (
       hours.day_of_week ===
         ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][currentDay] ||
-      hours.day_of_week === "Everyday"
+      hours.day_of_week === "Everyday" // ตรวจสอบว่าตรงกับ "เปิดทุกวัน" หรือไม่
     );
   });
 
+  // ถ้าพบเวลาเปิด-ปิดสำหรับวันนั้น
   if (todayOperatingHours) {
+    // แปลงเวลาเปิดและปิดจากรูปแบบ HH:MM เป็นตัวเลข (เช่น "09:00" จะกลายเป็น 900)
     const openingTime = parseInt(todayOperatingHours.opening_time.replace(":", ""));
     const closingTime = parseInt(todayOperatingHours.closing_time.replace(":", ""));
 
-    // Handle overnight open hours (closing after midnight)
+    // กรณีที่สถานที่เปิดข้ามวัน (ปิดหลังเที่ยงคืน)
     if (closingTime < openingTime) {
+      // ตรวจสอบว่าปัจจุบันเป็นช่วงเปิดหรือไม่ (ก่อนปิดหลังเที่ยงคืน หรือหลังเปิดก่อนเที่ยงคืน)
       return currentTime >= openingTime || currentTime <= closingTime;
     } else {
+      // กรณีทั่วไป: ตรวจสอบว่าเวลาปัจจุบันอยู่ในช่วงเปิด-ปิดหรือไม่
       return currentTime >= openingTime && currentTime <= closingTime;
     }
   }
 
+  // ถ้าไม่มีเวลาเปิด-ปิดตรงกับวันปัจจุบัน ให้ return false (สถานที่ไม่เปิด)
   return false;
 };
 
-
-// Helper function to check if the place is "Opening Soon" or "Closing Soon"
+// ตรวจสอบว่าสถานที่ใกล้เปิดหรือใกล้ปิดหรือไม่
 const getTimeUntilNextEvent = (openingTime, closingTime) => {
+  // เรียกใช้ฟังก์ชัน `getCurrentTimeInThailand()` เพื่อรับเวลาไทยปัจจุบัน
   const now = getCurrentTimeInThailand();
-  const currentTime = now.getHours() * 100 + now.getMinutes(); // Current time in HHMM format
 
+  // แปลงเวลาปัจจุบันเป็นรูปแบบ HHMM (เช่น 14:30 จะกลายเป็น 1430)
+  const currentTime = now.getHours() * 100 + now.getMinutes();
+
+  // แปลงเวลาเปิดและปิดจากรูปแบบ "HH:MM" เป็นตัวเลข เช่น "09:00" จะกลายเป็น 900
   const openingTimeInt = parseInt(openingTime.replace(":", ""));
   const closingTimeInt = parseInt(closingTime.replace(":", ""));
 
-  // หากเวลาเปิดเป็นหลังเที่ยงคืน ให้จัดการกรณีพิเศษ
+  // ตรวจสอบกรณีที่สถานที่เปิดข้ามวัน (ปิดหลังเที่ยงคืน)
   if (closingTimeInt < openingTimeInt) {
-    // สถานที่เปิดถึงวันถัดไป (ข้ามคืน)
+    // ถ้าเวลาปัจจุบันอยู่ในช่วงที่เปิดข้ามวัน (เช่น 22:00 - 03:00)
     if (currentTime >= openingTimeInt || currentTime <= closingTimeInt) {
-      const timeUntilClose = closingTimeInt - currentTime;
+      const timeUntilClose = closingTimeInt - currentTime; // เวลาที่เหลือก่อนปิด
+
+      // ถ้าเหลือเวลาปิดไม่เกิน 1 ชั่วโมง (เช่น 100 นาที)
       if (timeUntilClose <= 100) {
-        return { status: "Closing Soon" };
+        return { status: "Closing Soon" }; // แจ้งว่าใกล้ปิด
       }
     }
   } else {
-    // สถานที่เปิดปกติภายในวันเดียวกัน
+    // กรณีปกติ: ตรวจสอบเวลาเปิด-ปิดภายในวันเดียวกัน
     if (currentTime < openingTimeInt) {
-      const timeUntilOpen = openingTimeInt - currentTime;
+      // ถ้าเวลาปัจจุบันยังไม่ถึงเวลาเปิด
+      const timeUntilOpen = openingTimeInt - currentTime; // เวลาที่เหลือก่อนเปิด
+
+      // ถ้าเหลือเวลาเปิดไม่เกิน 1 ชั่วโมง
       if (timeUntilOpen <= 100) {
-        return { status: "Opening Soon" };
+        return { status: "Opening Soon" }; // แจ้งว่าใกล้เปิด
       }
     } else if (currentTime < closingTimeInt) {
-      const timeUntilClose = closingTimeInt - currentTime;
+      // ถ้าเวลาปัจจุบันอยู่ในช่วงเวลาเปิด
+      const timeUntilClose = closingTimeInt - currentTime; // เวลาที่เหลือก่อนปิด
+
+      // ถ้าเหลือเวลาปิดไม่เกิน 1 ชั่วโมง
       if (timeUntilClose <= 100) {
-        return { status: "Closing Soon" };
+        return { status: "Closing Soon" }; // แจ้งว่าใกล้ปิด
       }
     }
   }
 
+  // ถ้าไม่อยู่ในสถานะใกล้เปิดหรือปิด ให้คืนค่า status เป็น null
   return { status: null };
 };
 
-
 const PlaceNearbyPage = ({ params }) => {
   const { id } = params;
-  const [tourismData, setTourismData] = useState(null);
-  const [nearbyEntities, setNearbyEntities] = useState([]);
-  const [showOperatingHours, setShowOperatingHours] = useState(false);
+ const [tourismData, setTourismData] = useState(null); // สร้าง state เพื่อเก็บข้อมูลของสถานที่ (ใช้ค่าเริ่มต้นเป็น `null`)
+ const [nearbyEntities, setNearbyEntities] = useState([]);  // สร้าง state สำหรับเก็บข้อมูลสถานที่ใกล้เคียง (ค่าเริ่มต้นเป็น array ว่าง)
+ const [showOperatingHours, setShowOperatingHours] = useState(false);  // สร้าง state เพื่อตรวจสอบว่าจะแสดงเวลาเปิด-ปิดหรือไม่ (ค่าเริ่มต้นเป็น `false`)
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
@@ -221,36 +251,49 @@ const PlaceNearbyPage = ({ params }) => {
   const toggleOperatingHours = () => setShowOperatingHours(!showOperatingHours);
 
   useEffect(() => {
+    // ฟังก์ชัน Async สำหรับดึงข้อมูลสถานที่ท่องเที่ยวและสถานที่ใกล้เคียง
     const fetchTourismData = async () => {
+      // ตรวจสอบว่ามี id ของสถานที่ถูกส่งมาหรือไม่
       if (id) {
         try {
+          // ดึงข้อมูลสถานที่โดยใช้ฟังก์ชัน getNearbyFetchTourismData และแปลง id เป็นตัวเลข
           const data = await getNearbyFetchTourismData(Number(id));
+  
+          // ถ้าสถานที่มีภาพ ให้ลบภาพที่ซ้ำกัน
           if (data.entity && data.entity.images) {
             data.entity.images = removeDuplicateImages(data.entity.images);
           }
+  
+          // ถ้ามีสถานที่ใกล้เคียง ให้ลบภาพซ้ำของแต่ละสถานที่
           if (data.nearbyEntities) {
             data.nearbyEntities = data.nearbyEntities.map((entity) => {
               if (entity.images) {
                 entity.images = removeDuplicateImages(entity.images);
               }
-              return entity;
+              return entity; // คืนค่า entity ที่ถูกลบภาพซ้ำแล้ว
             });
           }
+  
+          // อัปเดต state ด้วยข้อมูลสถานที่และสถานที่ใกล้เคียง
           setTourismData(data.entity);
           setNearbyEntities(data.nearbyEntities);
-
+  
+          // ถ้าไม่มีสถานที่ใกล้เคียง แสดง SweetAlert แจ้งผู้ใช้
           if (!data.nearbyEntities || data.nearbyEntities.length === 0) {
             Swal.fire("No Nearby Places", "ไม่พบสถานที่ใกล้เคียง", "info");
           }
         } catch (error) {
+          // กรณีเกิดข้อผิดพลาด ให้แสดงข้อความ Error ด้วย SweetAlert
           console.error("Error fetching tourism data:", error);
           Swal.fire("Error", "ไม่สามารถดึงข้อมูลได้ กรุณาลองใหม่อีกครั้ง", "error");
         }
       }
     };
-
+  
+    // เรียกใช้ฟังก์ชัน fetchTourismData เมื่อ component ถูกสร้างขึ้นหรือ id เปลี่ยนแปลง
     fetchTourismData();
-  }, [id]);
+  }, [id]); // ทำงานเมื่อค่า id เปลี่ยนแปลง
+  
 
   if (!isLoaded) {
     return (
@@ -381,9 +424,6 @@ const PlaceNearbyPage = ({ params }) => {
     )}
   </div>
 )}
-
-
-
           {/* Operating Hours */}
           {tourismData.category_name !== "ที่พัก" && (
             <div className="mt-6 p-4 bg-white rounded-lg shadow-lg">
@@ -459,7 +499,8 @@ const PlaceNearbyPage = ({ params }) => {
           <FaMapMarkerAlt className="mr-2 text-5xl text-orange-500" />
           แผนที่
         </h1>
-
+        
+        {/* ตรวจสอบว่าพิกัดถูกต้องหรือไม่ หากพิกัดถูกต้อง จะแสดงข้อมูลสถานที่และแผนที่ พร้อมตำแหน่งของสถานที่ใกล้เคียง */}
         {isValidCoordinates ? (
           <>
             <div className="text-lg text-gray-700 mb-4 flex items-center">
@@ -478,9 +519,10 @@ const PlaceNearbyPage = ({ params }) => {
             />
           </>
         ) : (
+          // หากพิกัดไม่ถูกต้อง จะแสดงข้อความ "ไม่พบข้อมูลพิกัดสถานที่"
           <div className="flex items-center justify-center h-64 bg-gray-200 text-gray-600">
             <FaInfoCircle className="text-orange-500 mr-2" />
-            <p>ไม่พบข้อมูลพิกัดสถานที่</p>
+            <p>ไม่พบข้อมูลพิกัดสถานที่</p>  
           </div>
         )}
       </div>

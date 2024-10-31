@@ -72,153 +72,191 @@ const GeocodingSearchPage = () => {
   });
 
   useEffect(() => {
-    setIsClient(true);
+    setIsClient(true); // ตั้งค่าว่าเป็น client-side (เบราว์เซอร์) โดยอัปเดต state
+  
+    // ประกาศฟังก์ชัน async เพื่อโหลดข้อมูลฟิลเตอร์ทั้งหมด
     const loadFilters = async () => {
       try {
+        // เรียกใช้ฟังก์ชัน fetchAllFilters() เพื่อดึงข้อมูลฟิลเตอร์
         const data = await fetchAllFilters();
-        setFilters(data);
+        setFilters(data); // บันทึกข้อมูลฟิลเตอร์ใน state
       } catch (error) {
-        console.error("Error fetching filters:", error);
+        // จัดการข้อผิดพลาดที่เกิดขึ้นระหว่างการดึงข้อมูล
+        console.error("Error fetching filters:", error); // แสดงข้อผิดพลาดใน console
       }
     };
-
-    loadFilters();
-  }, []);
+  
+    loadFilters(); // เรียกใช้ฟังก์ชันเพื่อโหลดฟิลเตอร์เมื่อ component ถูก mount
+  }, []); // useEffect จะทำงานเพียงครั้งเดียวเมื่อ component ถูก mount
+  
 
   
   useEffect(() => {
-    if (!isClient) return;
+    // ตรวจสอบว่ากำลังรันบน client-side (เบราว์เซอร์) หรือไม่
+    if (!isClient) return; // ถ้าไม่ใช่ client-side ให้หยุดการทำงานของ useEffect
   
+    // ฟังก์ชันสำหรับอัปเดตตำแหน่งผู้ใช้
     const updateLocation = () => {
-      setLoading(true);
+      setLoading(true); // ตั้งสถานะการโหลดเป็น true เพื่อแสดงว่าเริ่มการดึงข้อมูลตำแหน่ง
+  
+      // ใช้ navigator.geolocation เพื่อขอตำแหน่งปัจจุบันของผู้ใช้
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          // ดึง latitude และ longitude จากตำแหน่งที่ได้รับ
           const { latitude, longitude } = position.coords;
   
-          // Log the user's location to the console
+          // แสดงตำแหน่งผู้ใช้ใน console สำหรับ debug
           console.log(`User's location: Latitude ${latitude}, Longitude ${longitude}`);
   
-          // Set the user's location in state
+          // บันทึกตำแหน่งผู้ใช้ลงใน state
           setUserLocation({ lat: latitude, lng: longitude });
   
-          // Fetch nearby places based on user's location
+          // ดึงข้อมูลสถานที่ใกล้เคียงตามพิกัดที่ได้รับ
           fetchNearbyPlaces(latitude, longitude);
-          setLoading(false);
+  
+          setLoading(false); // ยกเลิกสถานะการโหลดหลังจากดึงข้อมูลสำเร็จ
         },
         (error) => {
-          console.error("Error getting user's location:", error);
-          setLoading(false);
+          // จัดการข้อผิดพลาดเมื่อไม่สามารถดึงตำแหน่งผู้ใช้ได้
+          console.error("Error getting user's location:", error); // แสดงข้อผิดพลาดใน console
+          setLoading(false); // ยกเลิกสถานะการโหลดเมื่อเกิดข้อผิดพลาด
         }
       );
     };
   
+    // เรียกใช้ฟังก์ชัน updateLocation เมื่อ useEffect ทำงาน
     updateLocation();
-  }, [isClient]);
+  }, [isClient]); // useEffect จะทำงานใหม่เมื่อค่า isClient เปลี่ยนแปลง
+  
   
 
   const fetchNearbyPlaces = async (lat, lng, radius) => {
     try {
-      setLoading(true);
-      const data = await fetchPlacesNearbyByCoordinates(lat, lng,  radius);
-      setNearbyPlaces(data);
+      setLoading(true); // ตั้งสถานะการโหลดเป็น true เพื่อแสดงว่ากำลังดึงข้อมูลสถานที่ใกล้เคียง
+  
+      // เรียกใช้ฟังก์ชัน fetchPlacesNearbyByCoordinates เพื่อดึงข้อมูลสถานที่ใกล้เคียง
+      const data = await fetchPlacesNearbyByCoordinates(lat, lng, radius);
+  
+      setNearbyPlaces(data); // บันทึกข้อมูลสถานที่ใกล้เคียงลงใน state
     } catch (error) {
-      console.error("Error fetching nearby places:", error);
-      setNearbyPlaces([]);
+      // จัดการข้อผิดพลาด ถ้าการดึงข้อมูลล้มเหลว
+      console.error("Error fetching nearby places:", error); // แสดงข้อผิดพลาดใน console
+      setNearbyPlaces([]); // ล้างข้อมูลสถานที่ใกล้เคียงในกรณีที่เกิดข้อผิดพลาด
     } finally {
-      setLoading(false);
+      setLoading(false); // ไม่ว่าจะสำเร็จหรือเกิดข้อผิดพลาด หยุดการโหลดเสมอ
     }
   };
+  
 
   const searchPlaces = async (params) => {
     try {
-      setLoading(true);
-      setHasSearched(true); 
+      setLoading(true); // ตั้งสถานะการโหลดเป็น true เพื่อแสดงว่าเริ่มการค้นหาแล้ว
+      setHasSearched(true); // อัปเดตสถานะเพื่อบอกว่ามีการค้นหาเกิดขึ้น
+  
+      // เรียกใช้ฟังก์ชัน searchTouristEntitiesUnified() เพื่อค้นหาสถานที่โดยส่ง params ไป
       const data = await searchTouristEntitiesUnified(params);
+  
+      // บันทึกผลลัพธ์การค้นหาใน state
       setSearchResults(data);
-
-      if (data.length > 0) {
-        const firstResult = data[0];
+  
+      if (data.length > 0) { 
+        // ถ้ามีผลลัพธ์การค้นหา ให้ตั้งศูนย์กลางแผนที่ไปที่พิกัดของผลลัพธ์แรก
+        const firstResult = data[0]; // ดึงรายการแรกจากผลลัพธ์
         setMapCenter({
-          lat: Number(firstResult.latitude),
-          lng: Number(firstResult.longitude)
+          lat: Number(firstResult.latitude), // แปลง latitude เป็นตัวเลข
+          lng: Number(firstResult.longitude) // แปลง longitude เป็นตัวเลข
         });
       }
     } catch (error) {
-      console.error("Error searching places:", error);
-      setSearchResults([]);
+      // จัดการข้อผิดพลาด ถ้ามีปัญหาในการค้นหา
+      console.error("Error searching places:", error); // แสดงข้อความผิดพลาดใน console
+      setSearchResults([]); // ล้างผลลัพธ์การค้นหา
     } finally {
-      setLoading(false);
+      setLoading(false); // ไม่ว่าการค้นหาจะสำเร็จหรือเกิดข้อผิดพลาด จะหยุดการโหลดเสมอ
     }
   };
+  
 
   const handleSearchByField = (field, value) => {
-    // Reset search results and nearby places when any field is updated
+    // ล้างผลการค้นหาและสถานที่ใกล้เคียงเมื่อมีการอัปเดตฟิลด์ใด ๆ
     setSearchResults([]); 
     setNearbyPlaces([]); 
     
-    // Update search parameters and trigger new search
-    const updatedParams = { ...searchParams, [field]: value };
-    setSearchParams(updatedParams);
-    searchPlaces(updatedParams); // Perform search based on the updated params
+    // อัปเดตพารามิเตอร์การค้นหาและเริ่มการค้นหาใหม่
+    const updatedParams = { ...searchParams, [field]: value }; // คัดลอก searchParams และอัปเดตฟิลด์ที่เปลี่ยนแปลง
+    setSearchParams(updatedParams); // อัปเดต state ของพารามิเตอร์การค้นหา
+    searchPlaces(updatedParams); // เรียกใช้การค้นหาโดยใช้พารามิเตอร์ที่อัปเดต
   
-    // Update related states for specific fields
+    // ตรวจสอบและจัดการสถานะที่เกี่ยวข้องกับฟิลด์แต่ละประเภท
     if (field === "category") {
-      const selectedCategory = filters.categories.find((cat) => cat.id === value);
-      setSelectedCategory(selectedCategory?.name || null);
-      setIsCategoryDropdownOpen(false);
+      // หากฟิลด์ที่อัปเดตเป็นประเภทหมวดหมู่
+      const selectedCategory = filters.categories.find((cat) => cat.id === value); // ค้นหาหมวดหมู่ที่เลือก
+      setSelectedCategory(selectedCategory?.name || null); // อัปเดตชื่อหมวดหมู่ใน state
+      setIsCategoryDropdownOpen(false); // ปิด dropdown ของหมวดหมู่
+  
+      // ตรวจสอบว่าหมวดหมู่ที่เลือกเป็น "สถานที่ท่องเที่ยว" หรือไม่
       const isTouristCategory = selectedCategory?.name === "สถานที่ท่องเที่ยว";
-      setIsSeasonEnabled(isTouristCategory);
+      setIsSeasonEnabled(isTouristCategory); // เปิด/ปิดการใช้งาน dropdown ของฤดูกาลตามหมวดหมู่
   
       if (!isTouristCategory) {
-        setSelectedSeason(null);
-        setSearchParams((prevParams) => ({ ...prevParams, season: null }));
+        // ถ้าหมวดหมู่ไม่ใช่ "สถานที่ท่องเที่ยว" ให้ล้างค่าฤดูกาลที่เลือก
+        setSelectedSeason(null); 
+        setSearchParams((prevParams) => ({ ...prevParams, season: null })); // อัปเดตพารามิเตอร์โดยลบค่าฤดูกาลออก
       }
     }
   
     if (field === "season") {
-      const seasonName = filters.seasons.find((season) => season.id === value)?.name || null;
-      setSelectedSeason(seasonName);
-      setIsSeasonDropdownOpen(false);
+      // ถ้าฟิลด์ที่อัปเดตคือ "ฤดูกาล"
+      const seasonName = filters.seasons.find((season) => season.id === value)?.name || null; // ค้นหาชื่อฤดูกาล
+      setSelectedSeason(seasonName); // อัปเดต state ของฤดูกาลที่เลือก
+      setIsSeasonDropdownOpen(false); // ปิด dropdown ของฤดูกาล
     }
   
     if (field === "district") {
-      const districtName = filters.districts.find((district) => district.id === value)?.name || null;
-      setSelectedDistrict(districtName);
-      setIsDistrictDropdownOpen(false);
+      // ถ้าฟิลด์ที่อัปเดตคือ "อำเภอ"
+      const districtName = filters.districts.find((district) => district.id === value)?.name || null; // ค้นหาชื่ออำเภอ
+      setSelectedDistrict(districtName); // อัปเดต state ของอำเภอที่เลือก
+      setIsDistrictDropdownOpen(false); // ปิด dropdown ของอำเภอ
     }
   
     if (field === "day_of_week") {
-      setSelectedDay(value);
+      // ถ้าฟิลด์ที่อัปเดตคือ "วันในสัปดาห์"
+      setSelectedDay(value); // อัปเดตวันใน state
     }
   };
+  
 
-
-   const handleCurrentLocationClick = () => {
+  const handleCurrentLocationClick = () => {
+    // ตรวจสอบว่าฟังก์ชัน geolocation รองรับโดยเบราว์เซอร์หรือไม่
     if (!navigator.geolocation) {
       console.error("Geolocation is not supported by this browser.");
-      return;
+      return; // หากไม่รองรับ ให้หยุดการทำงานของฟังก์ชัน
     }
-
-    setLoading(true);
-
-    // Request permission to access location
+  
+    setLoading(true); // แสดงสถานะการโหลดข้อมูล
+  
+    // ขอสิทธิ์เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        // ดึง latitude และ longitude จากตำแหน่งปัจจุบันของผู้ใช้
         const { latitude, longitude } = position.coords;
         console.log(`User's updated location: Latitude ${latitude}, Longitude ${longitude}`);
-
-        // Update the user's location state and map center
+  
+        // อัปเดตตำแหน่งของผู้ใช้ใน state
         setUserLocation({ lat: latitude, lng: longitude });
+  
+        // อัปเดตตำแหน่งศูนย์กลางของแผนที่
         setMapCenter({ lat: latitude, lng: longitude });
-
-        // Fetch nearby places based on the updated location
+  
+        // ดึงข้อมูลสถานที่ใกล้เคียงตามตำแหน่งที่อัปเดต
         fetchNearbyPlaces(latitude, longitude);
-
-        setLoading(false);
+  
+        setLoading(false); // ยกเลิกสถานะการโหลด
       },
       (error) => {
+        // กรณีที่เกิดข้อผิดพลาดในการดึงตำแหน่งผู้ใช้
         console.error("Error getting user's location:", error);
-        setLoading(false);
+        setLoading(false); // ยกเลิกสถานะการโหลด
       }
     );
   };
@@ -279,11 +317,18 @@ const GeocodingSearchPage = () => {
     return meters.toFixed(0) + ' เมตร';
   };
 
-  const removeDuplicates = (places) => {
-    return places.filter((place, index, self) =>
-      index === self.findIndex((p) => p.id === place.id && p.name === place.name)
-    );
-  };
+// ฟังก์ชันสำหรับลบข้อมูลที่ซ้ำกันในอาร์เรย์ของสถานที่
+const removeDuplicates = (places) => {
+  // ใช้ฟังก์ชัน filter() เพื่อกรองเฉพาะสถานที่ที่ไม่ซ้ำกัน
+  return places.filter((place, index, self) =>
+    // ใช้ findIndex() เพื่อตรวจสอบว่ามีสถานที่นี้อยู่แล้วหรือไม่
+    index === self.findIndex(
+      (p) => p.id === place.id && p.name === place.name // ถ้า id และ name เหมือนกัน แสดงว่าซ้ำ
+    )
+  );
+};
+
+
   return (
     <div className="container mx-auto p-4 relative">
       {/* Search Bar and Buttons */}

@@ -6,8 +6,8 @@ import "react-multi-carousel/lib/styles.css";
 import { fetchCurrentlyOpenTouristEntities } from "@/services/user/api";
 import Image from "next/image";
 import Link from "next/link";
-import { FaRoute } from "react-icons/fa";
-import { FaHotel, FaStore, FaUtensils, FaLandmark } from "react-icons/fa";
+// import { FaRoute } from "react-icons/fa";
+// import { FaHotel, FaStore, FaUtensils, FaLandmark } from "react-icons/fa";
 
 const responsive = {
   superLargeDesktop: {

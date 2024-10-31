@@ -24,46 +24,57 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
   }, []);
   
   const calculateRoutes = useCallback(() => {
+    // ตรวจสอบว่ามีข้อมูลตำแหน่งผู้ใช้และสถานที่ที่เลือก รวมถึง Google Maps API ถูกโหลดเรียบร้อยหรือไม่
     if (!userLocation || !selectedEntity || !window.google || !window.google.maps) return;
-
+  
+    // สร้างอินสแตนซ์ของ DirectionsService จาก Google Maps API
     const directionsService = new window.google.maps.DirectionsService();
+  
+    // เรียกใช้ฟังก์ชัน route เพื่อคำนวณเส้นทาง
     directionsService.route(
       {
-        origin: userLocation,
+        origin: userLocation, // จุดเริ่มต้นคือพิกัดของผู้ใช้
         destination: {
-          lat: Number(selectedEntity.latitude),
-          lng: Number(selectedEntity.longitude),
+          lat: Number(selectedEntity.latitude), // พิกัดละติจูดของสถานที่ที่เลือก (แปลงเป็นตัวเลข)
+          lng: Number(selectedEntity.longitude), // พิกัดลองจิจูดของสถานที่ที่เลือก (แปลงเป็นตัวเลข)
         },
-        travelMode: google.maps.TravelMode.DRIVING,
+        travelMode: google.maps.TravelMode.DRIVING, // กำหนดโหมดการเดินทางเป็น "ขับรถ"
       },
       (result, status) => {
+        // ตรวจสอบสถานะการคำนวณเส้นทาง
         if (status === google.maps.DirectionsStatus.OK) {
-          setDirections(result);
+          setDirections(result); // บันทึกผลลัพธ์เส้นทางใน state เพื่อใช้แสดงผลบนแผนที่
         } else {
-          console.error(`Error fetching directions: ${status}`);
+          console.error(`Error fetching directions: ${status}`); // แสดงข้อผิดพลาดใน console หากเกิดปัญหา
         }
       }
     );
-  }, [userLocation, isLoaded, selectedEntity]);
+  }, [userLocation, isLoaded, selectedEntity]); // useCallback จะเรียกใหม่เมื่อใดก็ตามที่ userLocation, isLoaded หรือ selectedEntity เปลี่ยนแปลง
 
   useEffect(() => {
+    // ตรวจสอบว่าเบราว์เซอร์รองรับ Geolocation หรือไม่
     if (navigator.geolocation) {
+      // ใช้ navigator.geolocation เพื่อดึงตำแหน่งปัจจุบันของผู้ใช้
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          // กำหนดตำแหน่งผู้ใช้ใน state โดยบันทึก latitude และ longitude
           setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
+            lat: position.coords.latitude, // เก็บละติจูดของผู้ใช้
+            lng: position.coords.longitude, // เก็บลองจิจูดของผู้ใช้
           });
         },
+        // จัดการข้อผิดพลาด ถ้าไม่สามารถดึงตำแหน่งได้
         (error) => console.error("Error fetching location:", error),
-        { enableHighAccuracy: true }
+        { enableHighAccuracy: true } // กำหนดให้ใช้ตำแหน่งที่มีความแม่นยำสูง
       );
     }
-  }, []);
-
+  }, []); // useEffect นี้ทำงานเพียงครั้งเดียวเมื่อ component ถูก mount
+  
   useEffect(() => {
+    // เรียกฟังก์ชัน calculateRoutes เมื่อ selectedEntity หรือ calculateRoutes เปลี่ยนแปลง
     calculateRoutes();
-  }, [selectedEntity,calculateRoutes]);
+  }, [selectedEntity, calculateRoutes]); // ฟังก์ชันจะทำงานใหม่เมื่อค่า selectedEntity หรือ calculateRoutes เปลี่ยนไป
+  
 
   if (!isLoaded) {
     return <div>Loading Maps...</div>;
