@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 
-Dynamically import the Chatbot component with no SSR
+
 const Chatbot = dynamic(() => import("@/components/Chatbot/Chatbot"), {
   ssr: false, // Ensure this component is client-side only
 });
