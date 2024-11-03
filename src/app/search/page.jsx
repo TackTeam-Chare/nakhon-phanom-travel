@@ -328,6 +328,22 @@ const removeDuplicates = (places) => {
   );
 };
 
+const dayOfWeekMapping = {
+  Sunday: "วันอาทิตย์",
+  Monday: "วันจันทร์",
+  Tuesday: "วันอังคาร",
+  Wednesday: "วันพุธ",
+  Thursday: "วันพฤหัสบดี",
+  Friday: "วันศุกร์",
+  Saturday: "วันเสาร์",
+  Everyday: "ทุกวัน",
+  ExceptHolidays: "ยกเว้นวันหยุดเสาร์-อาทิตย์",
+};
+
+const formatTimeTo24Hour = (time) => {
+  const [hour, minute] = time.split(":").map(Number);
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+};
 
   return (
     <div className="container mx-auto p-4 relative">
@@ -503,7 +519,7 @@ const removeDuplicates = (places) => {
               <option value="Friday">วันศุกร์</option>
               <option value="Saturday">วันเสาร์</option>
               <option value="Everyday">ทุกวัน</option>
-              <option value="ExceptHolidays">ยกเว้นวันหยุดนักขัตฤกษ์</option>
+              <option value="ExceptHolidays">ยกเว้นวันหยุดเสาร์-อาทิตย์</option>
             </select>
           </div>
 
@@ -552,11 +568,25 @@ const removeDuplicates = (places) => {
           อำเภอที่เลือก: {selectedDistrict}
         </p>
       )}
-        {selectedDay && (
-          <p className="text-lg font-bold text-orange-500">
-            วันที่เลือก: {selectedDay}
-          </p>
-        )}
+<div className="flex items-center justify-center space-x-4">
+  {selectedDay && (
+    <p className="text-lg font-bold text-orange-500">
+      วันที่เลือก: {dayOfWeekMapping[selectedDay] || selectedDay}
+    </p>
+  )}
+  {searchParams.opening_time && (
+    <p className="text-lg font-bold text-orange-500">
+      เวลาเปิด: {formatTimeTo24Hour(searchParams.opening_time)} น.
+    </p>
+  )}
+  {searchParams.closing_time && (
+    <p className="text-lg font-bold text-orange-500">
+      เวลาปิด: {formatTimeTo24Hour(searchParams.closing_time)} น.
+    </p>
+  )}
+</div>
+
+
       </div>
 
       {/* Loading Spinner */}
