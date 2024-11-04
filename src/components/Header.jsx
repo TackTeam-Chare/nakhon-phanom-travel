@@ -13,7 +13,8 @@ import {
   GiftIcon,
   ShoppingBagIcon,
   BuildingStorefrontIcon,
-  UserIcon
+  UserIcon,
+  InformationCircleIcon 
 } from "@heroicons/react/20/solid"
 
 export default function Header() {
@@ -98,6 +99,13 @@ export default function Header() {
           >
             <UserIcon className="h-5 w-5 mr-2" />
             เข้าสู่ระบบ
+          </a>
+          <a
+            href="/about"
+            className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
+          >
+            <InformationCircleIcon className="h-5 w-5 mr-2" />
+            เกี่ยวกับ
           </a>
         </nav>
 
@@ -208,6 +216,13 @@ export default function Header() {
             >
               <UserIcon className="h-5 w-5 mr-2" />
               เข้าสู่ระบบ
+            </a>
+            <a
+              href="/about"
+              className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
+            >
+              <InformationCircleIcon className="h-5 w-5 mr-2" />
+              เกี่ยวกับ
             </a>
           </div>
         </Dialog.Panel>

@@ -538,7 +538,7 @@ export const fetchPlacesNearbyByCoordinates = async (
 export const fetchPlacesNearbyByCoordinatesRealTime = async (
   latitude,
   longitude,
-  radius = 30000  // รัศมีการค้นหา 30 กิโลเมตร
+  radius = 300000  // รัศมีการค้นหา 30 กิโลเมตร
 ) => {
   try {
     const response = await api.get(`/places/nearby-by-coordinates`, {
