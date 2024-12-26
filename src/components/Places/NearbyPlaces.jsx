@@ -42,8 +42,10 @@ const convertMetersToKilometers = (meters) => {
   }
 
   if (meters >= 1000) {
+    // biome-ignore lint/style/useTemplate: <explanation>
     return (meters / 1000).toFixed(2) + " กิโลเมตร";
   }
+  // biome-ignore lint/style/useTemplate: <explanation>
   return meters.toFixed(0) + " เมตร";
 };
 

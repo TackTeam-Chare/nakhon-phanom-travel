@@ -74,7 +74,7 @@ export default function AboutPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-orange-600 mb-2">ติดต่อผู้พัฒนา</h2>
           <p className="text-gray-900">
-            อีเมล์: <a href="mailto:tackteam.dev@gmail.com" className="text-orange-600 hover:underline">tackteam.dev@gmail.com</a>
+            อีเมล: <a href="mailto:tackteam.dev@gmail.com" className="text-orange-600 hover:underline">tackteam.dev@gmail.com</a>
           </p>
         </section>
         

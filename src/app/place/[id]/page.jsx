@@ -1,4 +1,4 @@
-"use client"
+ "use client"
 import React, { useEffect, useState } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
@@ -28,18 +28,18 @@ import {
   FaChevronUp,
   FaRegClock,
   FaArrowRight,
-  // FaRoute,
+  FaUserCircle ,
+  FaCalendarAlt ,
+  FaStar ,
+  FaRoute,
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
 import { getNearbyFetchTourismData } from "@/services/user/api";
 import Swal from "sweetalert2";
 import { ClipLoader } from "react-spinners";
-import dynamic from "next/dynamic";
-const MapComponent = dynamic(() => import("@/components/Map/MapNearbyPlaces"), {
-  ssr: false
-});
-
+import MapComponent from "@/components/Map/MapNearbyPlaces";
+import ReviewSection from "@/components/ReviewSection"
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const responsive = {
@@ -61,31 +61,50 @@ const responsive = {
   },
 };
 
-// ฟังก์ชันช่วยแสดงหมายเหตุในคำอธิบาย
-const highlightNoteInDescription = (description) => (
-  <>
-    {description}
-    <p className="text-sm text-gray-500 mt-2">
-      <span className="font-bold text-red-500">หมายเหตุ:</span> รูปภาพประกอบอาจนำมาจากแหล่งภายนอก เช่น <em>Google Maps</em> หรือ <em>เพจ Facebook</em>
-    </p>
-  </>
+// ⭐ Review Card Component
+const ReviewCard = ({ review }) => (
+  <div className="bg-white shadow-md rounded-lg p-5 mb-4">
+    <div className="flex items-center mb-3">
+      <FaUserCircle className="text-gray-400 text-4xl mr-3" />
+      <div>
+        <h4 className="font-bold text-lg">{review.username || "ผู้ใช้งานทั่วไป"}</h4>
+        <p className="text-sm text-gray-500 flex items-center">
+          <FaCalendarAlt className="mr-1" />
+          {new Date(review.created_at).toLocaleDateString()}
+        </p>
+      </div>
+    </div>
+    <div className="flex items-center text-yellow-500 mb-3">
+      {Array.from({ length: review.rating }).map((_, index) => (
+        <FaStar key={index} />
+      ))}
+    </div>
+    <p className="text-gray-600 mb-2">{review.comment}</p>
+    {review.image_url && (
+      <Image
+        src={review.image_url}
+        alt="Review Image"
+        width={300}
+        height={200}
+        className="rounded-lg object-cover"
+      />
+    )}
+  </div>
 );
-
 const getSeasonIcon = (seasonName) => {
   switch (seasonName) {
     case "ฤดูร้อน":
       return <FaSun className="text-orange-500 mr-2" />;
     case "ฤดูฝน":
-      return <FaCloudRain className="text-orange-500 mr-2" />;
+      return <FaCloudRain className="text-blue-500 mr-2" />;
     case "ฤดูหนาว":
-      return <FaSnowflake className="text-orange-500 mr-2" />;
+      return <FaSnowflake className="text-teal-500 mr-2" />;
     case "ตลอดทั้งปี":
-      return <FaGlobe className="text-orange-500 mr-2" />;
+      return <FaGlobe className="text-green-500 mr-2" />;
     default:
-      return <FaLayerGroup className="text-orange-500 mr-2" />;
+      return <FaLayerGroup className="text-gray-500 mr-2" />;
   }
 };
-
 
 const getSeasonColor = (seasonName) => {
   switch (seasonName) {
@@ -132,118 +151,77 @@ const removeDuplicateImages = (images) => {
   return Array.from(uniqueImages.values());
 };
 
-// const convertMetersToKilometers = (meters) => (meters / 1000).toFixed(2);
+const convertMetersToKilometers = (meters) => (meters / 1000).toFixed(2);
 
 const getCurrentTimeInThailand = () => {
-  // สร้างออบเจ็กต์ Date สำหรับเวลาในปัจจุบัน (เวลาท้องถิ่นของระบบ)
   const now = new Date();
-
-  // คำนวณเวลาใน UTC (ลบด้วย Timezone Offset ของระบบปัจจุบัน) 
   const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
-
-  // เพิ่ม 7 ชั่วโมง (7 * 60 * 60 * 1000 มิลลิวินาที) เพื่อแปลงเป็นเวลาไทย (UTC+7)
   const thailandTime = new Date(utcTime + 7 * 60 * 60 * 1000);
-
-  // ส่งค่าเวลาในไทยกลับไป
   return thailandTime;
 };
 
 const isOpenNow = (operatingHours) => {
-  // ถ้า `operatingHours` ไม่มีข้อมูล หรือมีความยาวเป็น 0 ให้ return false ทันที (แปลว่าไม่เปิด)
   if (!operatingHours || operatingHours.length === 0) return false;
 
-  // เรียกฟังก์ชัน `getCurrentTimeInThailand()` เพื่อรับเวลาไทยปัจจุบัน
   const now = getCurrentTimeInThailand();
+  const currentDay = now.getDay(); // 0 for Sunday, 1 for Monday, etc.
+  const currentTime = now.getHours() * 100 + now.getMinutes(); // Time in HHMM format
 
-  // ดึงค่าของวันปัจจุบัน (0 สำหรับวันอาทิตย์, 1 สำหรับวันจันทร์, ... , 6 สำหรับวันเสาร์)
-  const currentDay = now.getDay(); 
-
-  // แปลงเวลาเป็นรูปแบบ HHMM (เช่น 14:30 จะกลายเป็น 1430)
-  const currentTime = now.getHours() * 100 + now.getMinutes(); 
-
-  // ค้นหาเวลาเปิด-ปิดสำหรับวันปัจจุบัน หรือสำหรับ "Everyday" (เปิดทุกวัน)
   const todayOperatingHours = operatingHours.find((hours) => {
     return (
       hours.day_of_week ===
         ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][currentDay] ||
-      hours.day_of_week === "Everyday" // ตรวจสอบว่าตรงกับ "เปิดทุกวัน" หรือไม่
+      hours.day_of_week === "Everyday"
     );
   });
 
-  // ถ้าพบเวลาเปิด-ปิดสำหรับวันนั้น
   if (todayOperatingHours) {
-    // แปลงเวลาเปิดและปิดจากรูปแบบ HH:MM เป็นตัวเลข (เช่น "09:00" จะกลายเป็น 900)
     const openingTime = parseInt(todayOperatingHours.opening_time.replace(":", ""));
     const closingTime = parseInt(todayOperatingHours.closing_time.replace(":", ""));
 
-    // กรณีที่สถานที่เปิดข้ามวัน (ปิดหลังเที่ยงคืน)
+    // Handle overnight open hours (closing after midnight)
     if (closingTime < openingTime) {
-      // ตรวจสอบว่าปัจจุบันเป็นช่วงเปิดหรือไม่ (ก่อนปิดหลังเที่ยงคืน หรือหลังเปิดก่อนเที่ยงคืน)
       return currentTime >= openingTime || currentTime <= closingTime;
     } else {
-      // กรณีทั่วไป: ตรวจสอบว่าเวลาปัจจุบันอยู่ในช่วงเปิด-ปิดหรือไม่
       return currentTime >= openingTime && currentTime <= closingTime;
     }
   }
 
-  // ถ้าไม่มีเวลาเปิด-ปิดตรงกับวันปัจจุบัน ให้ return false (สถานที่ไม่เปิด)
   return false;
 };
 
-// ตรวจสอบว่าสถานที่ใกล้เปิดหรือใกล้ปิดหรือไม่
+// Helper function to check if the place is "Opening Soon" or "Closing Soon"
 const getTimeUntilNextEvent = (openingTime, closingTime) => {
-  // เรียกใช้ฟังก์ชัน `getCurrentTimeInThailand()` เพื่อรับเวลาไทยปัจจุบัน
   const now = getCurrentTimeInThailand();
+  const currentTime = now.getHours() * 100 + now.getMinutes(); // Current time in HHMM format
 
-  // แปลงเวลาปัจจุบันเป็นรูปแบบ HHMM (เช่น 14:30 จะกลายเป็น 1430)
-  const currentTime = now.getHours() * 100 + now.getMinutes();
-
-  // แปลงเวลาเปิดและปิดจากรูปแบบ "HH:MM" เป็นตัวเลข เช่น "09:00" จะกลายเป็น 900
   const openingTimeInt = parseInt(openingTime.replace(":", ""));
   const closingTimeInt = parseInt(closingTime.replace(":", ""));
 
-  // ตรวจสอบกรณีที่สถานที่เปิดข้ามวัน (ปิดหลังเที่ยงคืน)
-  if (closingTimeInt < openingTimeInt) {
-    // ถ้าเวลาปัจจุบันอยู่ในช่วงที่เปิดข้ามวัน (เช่น 22:00 - 03:00)
-    if (currentTime >= openingTimeInt || currentTime <= closingTimeInt) {
-      const timeUntilClose = closingTimeInt - currentTime; // เวลาที่เหลือก่อนปิด
-
-      // ถ้าเหลือเวลาปิดไม่เกิน 1 ชั่วโมง (เช่น 100 นาที)
-      if (timeUntilClose <= 100) {
-        return { status: "Closing Soon" }; // แจ้งว่าใกล้ปิด
-      }
+  if (currentTime < openingTimeInt) {
+    const timeUntilOpen = openingTimeInt - currentTime;
+    if (timeUntilOpen <= 100) {
+      return { status: "Opening Soon" };
     }
-  } else {
-    // กรณีปกติ: ตรวจสอบเวลาเปิด-ปิดภายในวันเดียวกัน
-    if (currentTime < openingTimeInt) {
-      // ถ้าเวลาปัจจุบันยังไม่ถึงเวลาเปิด
-      const timeUntilOpen = openingTimeInt - currentTime; // เวลาที่เหลือก่อนเปิด
-
-      // ถ้าเหลือเวลาเปิดไม่เกิน 1 ชั่วโมง
-      if (timeUntilOpen <= 100) {
-        return { status: "Opening Soon" }; // แจ้งว่าใกล้เปิด
-      }
-    } else if (currentTime < closingTimeInt) {
-      // ถ้าเวลาปัจจุบันอยู่ในช่วงเวลาเปิด
-      const timeUntilClose = closingTimeInt - currentTime; // เวลาที่เหลือก่อนปิด
-
-      // ถ้าเหลือเวลาปิดไม่เกิน 1 ชั่วโมง
-      if (timeUntilClose <= 100) {
-        return { status: "Closing Soon" }; // แจ้งว่าใกล้ปิด
-      }
+  } else if (currentTime < closingTimeInt) {
+    const timeUntilClose = closingTimeInt - currentTime;
+    if (timeUntilClose <= 100) {
+      return { status: "Closing Soon" };
     }
   }
 
-  // ถ้าไม่อยู่ในสถานะใกล้เปิดหรือปิด ให้คืนค่า status เป็น null
   return { status: null };
 };
 
 const PlaceNearbyPage = ({ params }) => {
   const { id } = params;
- const [tourismData, setTourismData] = useState(null); // สร้าง state เพื่อเก็บข้อมูลของสถานที่ (ใช้ค่าเริ่มต้นเป็น `null`)
- const [nearbyEntities, setNearbyEntities] = useState([]);  // สร้าง state สำหรับเก็บข้อมูลสถานที่ใกล้เคียง (ค่าเริ่มต้นเป็น array ว่าง)
- const [showOperatingHours, setShowOperatingHours] = useState(false);  // สร้าง state เพื่อตรวจสอบว่าจะแสดงเวลาเปิด-ปิดหรือไม่ (ค่าเริ่มต้นเป็น `false`)
-
+  const [tourismData, setTourismData] = useState(null);
+  const [nearbyEntities, setNearbyEntities] = useState([]);
+  const [showOperatingHours, setShowOperatingHours] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [loading, setLoading] = useState(true);
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   });
@@ -251,49 +229,41 @@ const PlaceNearbyPage = ({ params }) => {
   const toggleOperatingHours = () => setShowOperatingHours(!showOperatingHours);
 
   useEffect(() => {
-    // ฟังก์ชัน Async สำหรับดึงข้อมูลสถานที่ท่องเที่ยวและสถานที่ใกล้เคียง
     const fetchTourismData = async () => {
-      // ตรวจสอบว่ามี id ของสถานที่ถูกส่งมาหรือไม่
       if (id) {
         try {
-          // ดึงข้อมูลสถานที่โดยใช้ฟังก์ชัน getNearbyFetchTourismData และแปลง id เป็นตัวเลข
           const data = await getNearbyFetchTourismData(Number(id));
-  
-          // ถ้าสถานที่มีภาพ ให้ลบภาพที่ซ้ำกัน
+          if (data.entity && data.entity.reviews) {
+            setReviews(data.entity.reviews);
+            setRating(data.entity.rating || 0);
+            setTotalReviews(data.entity.reviews.length || 0);
+          }
           if (data.entity && data.entity.images) {
             data.entity.images = removeDuplicateImages(data.entity.images);
           }
-  
-          // ถ้ามีสถานที่ใกล้เคียง ให้ลบภาพซ้ำของแต่ละสถานที่
           if (data.nearbyEntities) {
             data.nearbyEntities = data.nearbyEntities.map((entity) => {
               if (entity.images) {
                 entity.images = removeDuplicateImages(entity.images);
               }
-              return entity; // คืนค่า entity ที่ถูกลบภาพซ้ำแล้ว
+              return entity;
             });
           }
-  
-          // อัปเดต state ด้วยข้อมูลสถานที่และสถานที่ใกล้เคียง
           setTourismData(data.entity);
           setNearbyEntities(data.nearbyEntities);
-  
-          // ถ้าไม่มีสถานที่ใกล้เคียง แสดง SweetAlert แจ้งผู้ใช้
+
           if (!data.nearbyEntities || data.nearbyEntities.length === 0) {
             Swal.fire("No Nearby Places", "ไม่พบสถานที่ใกล้เคียง", "info");
           }
         } catch (error) {
-          // กรณีเกิดข้อผิดพลาด ให้แสดงข้อความ Error ด้วย SweetAlert
           console.error("Error fetching tourism data:", error);
           Swal.fire("Error", "ไม่สามารถดึงข้อมูลได้ กรุณาลองใหม่อีกครั้ง", "error");
         }
       }
     };
-  
-    // เรียกใช้ฟังก์ชัน fetchTourismData เมื่อ component ถูกสร้างขึ้นหรือ id เปลี่ยนแปลง
+
     fetchTourismData();
-  }, [id]); // ทำงานเมื่อค่า id เปลี่ยนแปลง
-  
+  }, [id]);
 
   if (!isLoaded) {
     return (
@@ -316,16 +286,15 @@ const PlaceNearbyPage = ({ params }) => {
   const isValidCoordinates =
     !isNaN(Number(tourismData.latitude)) && !isNaN(Number(tourismData.longitude));
 
-    const categoryIcons = {
-      "สถานที่ท่องเที่ยว": { icon: <FaLandmark className="text-orange-500" />, color: "text-orange-500" },
-      "ที่พัก": { icon: <FaHome className="text-orange-500" />, color: "text-orange-500" },
-      "ร้านอาหาร": { icon: <FaUtensils className="text-orange-500" />, color: "text-orange-500" },
-      "ร้านค้าของฝาก": { icon: <FaStore className="text-orange-500" />, color: "text-orange-500" },
-    };
-    
-    const getCategoryDetails = (categoryName) =>
-      categoryIcons[categoryName] || { icon: <FaLayerGroup className="text-orange-500" />, color: "text-orange-500" };
-    
+  const categoryIcons = {
+    "สถานที่ท่องเที่ยว": { icon: <FaLandmark />, color: "text-blue-500" },
+    "ที่พัก": { icon: <FaHome />, color: "text-purple-500" },
+    "ร้านอาหาร": { icon: <FaUtensils />, color: "text-red-500" },
+    "ร้านค้าของฝาก": { icon: <FaStore />, color: "text-green-500" },
+  };
+
+  const getCategoryDetails = (categoryName) =>
+    categoryIcons[categoryName] || { icon: <FaLayerGroup />, color: "text-gray-500" };
 
   return (
     <div className="container mx-auto mt-12 mb-12 px-4">
@@ -365,31 +334,30 @@ const PlaceNearbyPage = ({ params }) => {
           <div className="flex flex-col space-y-2">
             <div className="flex items-center text-lg">
               <FaMapMarkerAlt className="text-orange-500 mr-2 text-2xl" />
-              <strong className="text-gray-600">{tourismData.district_name}</strong>
+              <strong className="text-gray-700">{tourismData.district_name}</strong>
             </div>
             <div className={`flex items-center text-lg ${getCategoryDetails(tourismData.category_name).color}`}>
               {getCategoryDetails(tourismData.category_name).icon}
-              <strong className="ml-2 text-gray-600">
+              <strong className={`ml-2 ${getCategoryDetails(tourismData.category_name).color}`}>
                 {tourismData.category_name}
               </strong>
             </div>
             {/* Check if it's a tourist spot */}
             {tourismData.category_name === "สถานที่ท่องเที่ยว" && (
-              <div className={`flex items-center  text-lg ${getSeasonColor(tourismData.season_name)}`}>
+              <div className={`flex items-center text-lg ${getSeasonColor(tourismData.season_name)}`}>
                 {getSeasonIcon(tourismData.season_name)}
-                <strong className="text-gray-600">
+                <strong className={`ml-2 ${getSeasonColor(tourismData.season_name)}`}>
                   {tourismData.season_name}
                 </strong>
               </div>
             )}
           </div>
 
-        {/* Description */}
-<div className="flex items-center text-gray-600">
-  <FaInfoCircle className="text-orange-500 mr-2 text-3xl" />
-  <span>{highlightNoteInDescription(tourismData.description)}</span>
-</div>
-
+          {/* Description */}
+          <div className="flex items-center text-gray-600">
+            <FaInfoCircle className="text-orange-500 mr-2 text-3xl" />
+            <span>{tourismData.description}</span>
+          </div>
 
           {/* Location */}
           <div className="flex items-center text-gray-600">
@@ -397,33 +365,41 @@ const PlaceNearbyPage = ({ params }) => {
             <span>{tourismData.location}</span>
           </div>
 
+          {/* Open/Closed Status */}
           {tourismData.category_name !== "ที่พัก" && (
-  <div className="flex items-center font-bold text-lg">
-    {isOpenNow(tourismData.operating_hours) ? (
-      <span className="text-green-500 flex items-center">
-        <FaCheckCircle className="mr-1" /> เปิดทำการ
-      </span>
-    ) : (
-      <span className="text-red-500 flex items-center">
-        <FaTimesCircle className="mr-1" /> ปิดทำการ
-      </span>
-    )}
+            <div className="flex items-center font-bold text-lg">
+              {isOpenNow(tourismData.operating_hours) ? (
+                <span className="text-green-500 flex items-center">
+                  <FaCheckCircle className="mr-1" /> เปิดทำการ
+                </span>
+              ) : (
+                <span className="text-red-500 flex items-center">
+                  <FaTimesCircle className="mr-1" /> ปิดทำการ
+                </span>
+              )}
 
-    {/* ตรวจสอบเพียงครั้งเดียวเพื่อแสดงสถานะ "ใกล้เปิดเร็วๆนี้" หรือ "ใกล้ปิดเร็วๆนี้" */}
-    {tourismData.operating_hours.some((hours) => {
-      const nextEvent = getTimeUntilNextEvent(hours.opening_time, hours.closing_time);
-      return nextEvent.status === "Opening Soon" || nextEvent.status === "Closing Soon";
-    }) && (
-      <span className="ml-4 flex items-center text-red-500">
-      <FaClock className="mr-1" />
-      {tourismData.operating_hours.some((hours) => getTimeUntilNextEvent(hours.opening_time, hours.closing_time).status === "Opening Soon")
-        ? "ใกล้เปิดเร็วๆนี้"
-        : "ใกล้ปิดเร็วๆนี้"}
-    </span>
-    
-    )}
-  </div>
-)}
+              {/* Check for Opening Soon or Closing Soon */}
+              {tourismData.operating_hours.map((hours, index) => {
+                const nextEvent = getTimeUntilNextEvent(hours.opening_time, hours.closing_time);
+
+                if (nextEvent.status === "Opening Soon") {
+                  return (
+                    <span key={index} className="text-yellow-500 flex items-center ml-4">
+                      <FaClock className="mr-1" /> ใกล้เปิดเร็วๆนี้
+                    </span>
+                  );
+                } else if (nextEvent.status === "Closing Soon") {
+                  return (
+                    <span key={index} className="text-orange-500 flex items-center ml-4">
+                      <FaClock className="mr-1" /> ใกล้ปิดเร็วๆนี้
+                    </span>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          )}
+
           {/* Operating Hours */}
           {tourismData.category_name !== "ที่พัก" && (
             <div className="mt-6 p-4 bg-white rounded-lg shadow-lg">
@@ -499,8 +475,7 @@ const PlaceNearbyPage = ({ params }) => {
           <FaMapMarkerAlt className="mr-2 text-5xl text-orange-500" />
           แผนที่
         </h1>
-        
-        {/* ตรวจสอบว่าพิกัดถูกต้องหรือไม่ หากพิกัดถูกต้อง จะแสดงข้อมูลสถานที่และแผนที่ พร้อมตำแหน่งของสถานที่ใกล้เคียง */}
+
         {isValidCoordinates ? (
           <>
             <div className="text-lg text-gray-700 mb-4 flex items-center">
@@ -519,10 +494,9 @@ const PlaceNearbyPage = ({ params }) => {
             />
           </>
         ) : (
-          // หากพิกัดไม่ถูกต้อง จะแสดงข้อความ "ไม่พบข้อมูลพิกัดสถานที่"
           <div className="flex items-center justify-center h-64 bg-gray-200 text-gray-600">
             <FaInfoCircle className="text-orange-500 mr-2" />
-            <p>ไม่พบข้อมูลพิกัดสถานที่</p>  
+            <p>ไม่พบข้อมูลพิกัดสถานที่</p>
           </div>
         )}
       </div>
@@ -557,17 +531,15 @@ const PlaceNearbyPage = ({ params }) => {
                     <h3 className="text-lg font-semibold mb-2 flex items-center">
                       {entity.name}
                     </h3>
-                    {/* <p className={`font-bold flex items-center mb-2 ${getCategoryDetails(entity.category_name).color}`}>
+                    <p className={`font-bold flex items-center mb-2 ${getCategoryDetails(entity.category_name).color}`}>
                       {getCategoryDetails(entity.category_name).icon}
                       <span className="ml-2">{entity.category_name}</span>
-                    </p> */}
-                    <p className="text-gray-600 line-clamp-2">
-                      {entity.description}
                     </p>
-                    {/* <p className="text-orange-500 font-bold flex items-center">
+
+                    <p className="text-orange-500 font-bold flex items-center">
                       <FaRoute className="mr-2" />
                       ระยะห่าง {convertMetersToKilometers(entity.distance)} กิโลเมตร
-                    </p> */}
+                    </p>
                   </div>
 
                   {/* Status Section (Open/Closed) */}
@@ -588,6 +560,11 @@ const PlaceNearbyPage = ({ params }) => {
           </div>
         ))}
       </Carousel>
+     <ReviewSection
+        rating={rating}
+        totalReviews={totalReviews}
+        reviews={reviews}
+      />
     </div>
   );
 };

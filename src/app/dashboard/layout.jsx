@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }) {
       <Header />
 
       {/* Main content area */}
-      <main className="flex-grow  bg-gray-100">
+      <main className="flex-grow  bg-white">
         {children}
       </main>
       {/* Footer */}

@@ -376,6 +376,7 @@ export const getNearbyFetchTourismData = async (id, radius = 5000) => {
 
     // Map images for the nearby entities
     if (nearbyEntities && Array.isArray(nearbyEntities)) {
+      // biome-ignore lint/complexity/noForEach: <explanation>
       nearbyEntities.forEach(entity => {
         if (entity.images && Array.isArray(entity.images)) {
           entity.images = entity.images.map(image => ({
@@ -506,6 +507,7 @@ export const fetchPlacesNearbyByCoordinates = async (
   radius = 5000
 ) => {
   try {
+    // biome-ignore lint/style/noUnusedTemplateLiteral: <explanation>
     const response = await api.get(`/places/nearby-by-coordinates`, {
       params: {
         lat: latitude,
@@ -541,6 +543,7 @@ export const fetchPlacesNearbyByCoordinatesRealTime = async (
   radius = 300000  // รัศมีการค้นหา 30 กิโลเมตร
 ) => {
   try {
+    // biome-ignore lint/style/noUnusedTemplateLiteral: <explanation>
     const response = await api.get(`/places/nearby-by-coordinates`, {
       params: {
         lat: latitude,
@@ -603,3 +606,17 @@ export const fetchAllFilters = async () => {
     throw new Error(error.response?.data?.error || "Error fetching all filters")
   }
 }
+
+export const addReview = async (formData) => {
+  try {
+    const response = await api.post("/reviews/add", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding review:", error.response?.data || error.message);
+    throw error.response?.data || { error: "Failed to add review" };
+  }
+};

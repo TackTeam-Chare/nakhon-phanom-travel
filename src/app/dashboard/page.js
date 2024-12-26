@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { getEntityCounts } from "@/services/admin/dashboard/index";
 import {
@@ -35,7 +34,6 @@ const DashboardPage = () => {
     };
 
     fetchData();
-
     return () => {
       isMounted = false; // Cleanup ป้องกันปัญหา memory leaks
     };
