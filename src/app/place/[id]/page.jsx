@@ -7,6 +7,7 @@ import "react-multi-carousel/lib/styles.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useLoadScript } from "@react-google-maps/api";
+import ReviewSection from "@/components/ReviewSection"
 import {
   FaSun,
   FaCloudRain,
@@ -39,7 +40,7 @@ import { getNearbyFetchTourismData } from "@/services/user/api";
 import Swal from "sweetalert2";
 import { ClipLoader } from "react-spinners";
 import MapComponent from "@/components/Map/MapNearbyPlaces";
-import ReviewSection from "@/components/ReviewSection"
+
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const responsive = {
@@ -76,7 +77,8 @@ const ReviewCard = ({ review }) => (
     </div>
     <div className="flex items-center text-yellow-500 mb-3">
       {Array.from({ length: review.rating }).map((_, index) => (
-        <FaStar key={index} />
+        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<FaStar key={index} />
       ))}
     </div>
     <p className="text-gray-600 mb-2">{review.comment}</p>
@@ -122,7 +124,8 @@ const getSeasonColor = (seasonName) => {
 };
 
 const CustomLeftArrow = ({ onClick }) => (
-  <button
+  // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
     onClick={onClick}
     className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white text-orange-500 shadow-lg p-2 rounded-full z-10 hover:bg-orange-500 hover:text-white transition-all duration-300 ease-in-out"
     style={{ margin: "0 15px" }}
@@ -132,7 +135,8 @@ const CustomLeftArrow = ({ onClick }) => (
 );
 
 const CustomRightArrow = ({ onClick }) => (
-  <button
+  // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
     onClick={onClick}
     className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white text-orange-500 shadow-lg p-2 rounded-full z-10 hover:bg-orange-500 hover:text-white transition-all duration-300 ease-in-out"
     style={{ margin: "0 15px" }}
@@ -143,6 +147,7 @@ const CustomRightArrow = ({ onClick }) => (
 
 const removeDuplicateImages = (images) => {
   const uniqueImages = new Map();
+  // biome-ignore lint/complexity/noForEach: <explanation>
   images.forEach((image) => {
     if (!uniqueImages.has(image.image_url)) {
       uniqueImages.set(image.image_url, image);
@@ -176,12 +181,13 @@ const isOpenNow = (operatingHours) => {
   });
 
   if (todayOperatingHours) {
-    const openingTime = parseInt(todayOperatingHours.opening_time.replace(":", ""));
-    const closingTime = parseInt(todayOperatingHours.closing_time.replace(":", ""));
+    const openingTime = Number.parseInt(todayOperatingHours.opening_time.replace(":", ""));
+    const closingTime = Number.parseInt(todayOperatingHours.closing_time.replace(":", ""));
 
     // Handle overnight open hours (closing after midnight)
     if (closingTime < openingTime) {
       return currentTime >= openingTime || currentTime <= closingTime;
+    // biome-ignore lint/style/noUselessElse: <explanation>
     } else {
       return currentTime >= openingTime && currentTime <= closingTime;
     }
@@ -195,8 +201,8 @@ const getTimeUntilNextEvent = (openingTime, closingTime) => {
   const now = getCurrentTimeInThailand();
   const currentTime = now.getHours() * 100 + now.getMinutes(); // Current time in HHMM format
 
-  const openingTimeInt = parseInt(openingTime.replace(":", ""));
-  const closingTimeInt = parseInt(closingTime.replace(":", ""));
+  const openingTimeInt = Number.parseInt(openingTime.replace(":", ""));
+  const closingTimeInt = Number.parseInt(closingTime.replace(":", ""));
 
   if (currentTime < openingTimeInt) {
     const timeUntilOpen = openingTimeInt - currentTime;
@@ -221,7 +227,7 @@ const PlaceNearbyPage = ({ params }) => {
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
-  const [loading, setLoading] = useState(true);
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   });
@@ -233,11 +239,13 @@ const PlaceNearbyPage = ({ params }) => {
       if (id) {
         try {
           const data = await getNearbyFetchTourismData(Number(id));
+          // biome-ignore lint/complexity/useOptionalChain: <explanation>
           if (data.entity && data.entity.reviews) {
             setReviews(data.entity.reviews);
             setRating(data.entity.rating || 0);
             setTotalReviews(data.entity.reviews.length || 0);
           }
+          // biome-ignore lint/complexity/useOptionalChain: <explanation>
           if (data.entity && data.entity.images) {
             data.entity.images = removeDuplicateImages(data.entity.images);
           }
@@ -284,6 +292,7 @@ const PlaceNearbyPage = ({ params }) => {
   }
 
   const isValidCoordinates =
+    // biome-ignore lint/suspicious/noGlobalIsNan: <explanation>
     !isNaN(Number(tourismData.latitude)) && !isNaN(Number(tourismData.longitude));
 
   const categoryIcons = {
@@ -303,7 +312,8 @@ const PlaceNearbyPage = ({ params }) => {
           <Slide easing="ease" prevArrow={<CustomLeftArrow />} nextArrow={<CustomRightArrow />}>
             {Array.isArray(tourismData.images) && tourismData.images.length > 0 ? (
               tourismData.images.map((image, index) => (
-                <div key={index}>
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<div key={index}>
                   <Image
                     src={image.image_url}
                     alt={`Slide ${index + 1}`}
@@ -384,13 +394,16 @@ const PlaceNearbyPage = ({ params }) => {
 
                 if (nextEvent.status === "Opening Soon") {
                   return (
-                    <span key={index} className="text-yellow-500 flex items-center ml-4">
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<span key={index} className="text-yellow-500 flex items-center ml-4">
                       <FaClock className="mr-1" /> ใกล้เปิดเร็วๆนี้
                     </span>
                   );
+                // biome-ignore lint/style/noUselessElse: <explanation>
                 } else if (nextEvent.status === "Closing Soon") {
                   return (
-                    <span key={index} className="text-orange-500 flex items-center ml-4">
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<span key={index} className="text-orange-500 flex items-center ml-4">
                       <FaClock className="mr-1" /> ใกล้ปิดเร็วๆนี้
                     </span>
                   );
@@ -403,7 +416,8 @@ const PlaceNearbyPage = ({ params }) => {
           {/* Operating Hours */}
           {tourismData.category_name !== "ที่พัก" && (
             <div className="mt-6 p-4 bg-white rounded-lg shadow-lg">
-              <h2
+              {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+<h2
                 className="text-lg text-orange-500 font-black mb-3 flex items-center cursor-pointer"
                 onClick={toggleOperatingHours}
               >
@@ -420,6 +434,7 @@ const PlaceNearbyPage = ({ params }) => {
                 <ul className="mt-4">
                   {tourismData.operating_hours.map((hours, index) => (
                     <li
+                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                       key={index}
                       className="flex justify-between items-center py-2 border-b border-gray-200 last:border-none"
                     >
@@ -560,7 +575,8 @@ const PlaceNearbyPage = ({ params }) => {
           </div>
         ))}
       </Carousel>
-     <ReviewSection
+       {/* รีวิว Section */}
+       <ReviewSection
         rating={rating}
         totalReviews={totalReviews}
         reviews={reviews}

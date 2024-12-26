@@ -40,7 +40,8 @@ const ReviewCard = ({ review }) => (
     {/* Rating */}
     <div className="flex items-center mb-3 text-yellow-400">
       {Array.from({ length: review.rating }).map((_, index) => (
-        <FaStar key={index} />
+        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<FaStar key={index} />
       ))}
     </div>
 
