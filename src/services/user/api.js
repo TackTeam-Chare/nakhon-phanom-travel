@@ -607,7 +607,7 @@ export const fetchAllFilters = async () => {
   }
 }
 
-export const addReview = async (formData) => {
+export const saveReview = async (formData) => {
   try {
     const response = await api.post("/reviews/add", formData, {
       headers: {
@@ -620,3 +620,22 @@ export const addReview = async (formData) => {
     throw error.response?.data || { error: "Failed to add review" };
   }
 };
+
+// export const saveReview = async (formData) => {
+//   try {
+//     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/reviews/add`, {
+//       method: "POST",
+//       body: formData, // Pass FormData directly as the body
+//     });
+
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       throw new Error(errorData.error || "Failed to save review");
+//     }
+
+//     return await response.json();
+//   } catch (error) {
+//     console.error("Error saving review:", error);
+//     throw error;
+//   }
+// };

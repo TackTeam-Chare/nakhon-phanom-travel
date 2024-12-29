@@ -29,9 +29,6 @@ import {
   FaChevronUp,
   FaRegClock,
   FaArrowRight,
-  FaUserCircle ,
-  FaCalendarAlt ,
-  FaStar ,
   FaRoute,
   FaChevronLeft,
   FaChevronRight,
@@ -40,7 +37,7 @@ import { getNearbyFetchTourismData } from "@/services/user/api";
 import Swal from "sweetalert2";
 import { ClipLoader } from "react-spinners";
 import MapComponent from "@/components/Map/MapNearbyPlaces";
-
+import ReviewForm from "@/components/ReviewModal";
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const responsive = {
@@ -62,37 +59,6 @@ const responsive = {
   },
 };
 
-// ⭐ Review Card Component
-const ReviewCard = ({ review }) => (
-  <div className="bg-white shadow-md rounded-lg p-5 mb-4">
-    <div className="flex items-center mb-3">
-      <FaUserCircle className="text-gray-400 text-4xl mr-3" />
-      <div>
-        <h4 className="font-bold text-lg">{review.username || "ผู้ใช้งานทั่วไป"}</h4>
-        <p className="text-sm text-gray-500 flex items-center">
-          <FaCalendarAlt className="mr-1" />
-          {new Date(review.created_at).toLocaleDateString()}
-        </p>
-      </div>
-    </div>
-    <div className="flex items-center text-yellow-500 mb-3">
-      {Array.from({ length: review.rating }).map((_, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-<FaStar key={index} />
-      ))}
-    </div>
-    <p className="text-gray-600 mb-2">{review.comment}</p>
-    {review.image_url && (
-      <Image
-        src={review.image_url}
-        alt="Review Image"
-        width={300}
-        height={200}
-        className="rounded-lg object-cover"
-      />
-    )}
-  </div>
-);
 const getSeasonIcon = (seasonName) => {
   switch (seasonName) {
     case "ฤดูร้อน":
@@ -575,12 +541,15 @@ const PlaceNearbyPage = ({ params }) => {
           </div>
         ))}
       </Carousel>
-       {/* รีวิว Section */}
-       <ReviewSection
-        rating={rating}
-        totalReviews={totalReviews}
-        reviews={reviews}
-      />
+      <ReviewForm place={tourismData} />
+{reviews.length > 0 && (
+  <ReviewSection
+    rating={rating}
+    totalReviews={totalReviews}
+    reviews={reviews}
+  />
+)}
+
     </div>
   );
 };
