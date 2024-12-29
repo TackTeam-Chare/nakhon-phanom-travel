@@ -29,7 +29,6 @@ import {
   FaChevronUp,
   FaRegClock,
   FaArrowRight,
-  FaRoute,
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
@@ -60,34 +59,25 @@ const responsive = {
 };
 
 const getSeasonIcon = (seasonName) => {
+  const iconClass = "text-orange-500 font-bold mr-2";
   switch (seasonName) {
     case "ฤดูร้อน":
-      return <FaSun className="text-orange-500 mr-2" />;
+      return <FaSun className={iconClass} />;
     case "ฤดูฝน":
-      return <FaCloudRain className="text-blue-500 mr-2" />;
+      return <FaCloudRain className={iconClass} />;
     case "ฤดูหนาว":
-      return <FaSnowflake className="text-teal-500 mr-2" />;
+      return <FaSnowflake className={iconClass} />;
     case "ตลอดทั้งปี":
-      return <FaGlobe className="text-green-500 mr-2" />;
+      return <FaGlobe className={iconClass} />;
     default:
-      return <FaLayerGroup className="text-gray-500 mr-2" />;
+      return <FaLayerGroup className={iconClass} />;
   }
 };
 
 const getSeasonColor = (seasonName) => {
-  switch (seasonName) {
-    case "ฤดูร้อน":
-      return "text-orange-500";
-    case "ฤดูฝน":
-      return "text-blue-500";
-    case "ฤดูหนาว":
-      return "text-teal-500";
-    case "ตลอดทั้งปี":
-      return "text-green-500";
-    default:
-      return "text-gray-500";
-  }
+  return "text-black font-bold";  // เปลี่ยนสีข้อความเป็นสีดำและตัวหนา
 };
+
 
 const CustomLeftArrow = ({ onClick }) => (
   // biome-ignore lint/a11y/useButtonType: <explanation>
@@ -121,8 +111,6 @@ const removeDuplicateImages = (images) => {
   });
   return Array.from(uniqueImages.values());
 };
-
-const convertMetersToKilometers = (meters) => (meters / 1000).toFixed(2);
 
 const getCurrentTimeInThailand = () => {
   const now = new Date();
@@ -312,9 +300,9 @@ const PlaceNearbyPage = ({ params }) => {
               <FaMapMarkerAlt className="text-orange-500 mr-2 text-2xl" />
               <strong className="text-gray-700">{tourismData.district_name}</strong>
             </div>
-            <div className={`flex items-center text-lg ${getCategoryDetails(tourismData.category_name).color}`}>
+            <div className="flex items-center text-lg text-orange-500  ">
               {getCategoryDetails(tourismData.category_name).icon}
-              <strong className={`ml-2 ${getCategoryDetails(tourismData.category_name).color}`}>
+              <strong className="ml-2 text-black  font-bold">
                 {tourismData.category_name}
               </strong>
             </div>
@@ -506,36 +494,20 @@ const PlaceNearbyPage = ({ params }) => {
                     <span className="text-gray-500">ไม่มีรูปภาพ</span>
                   </div>
                 )}
+<div className="p-4 flex-grow flex flex-col justify-between">
+  <div>
+    <h3 className="text-lg font-semibold mb-2 flex items-center">
+      {entity.name}
+    </h3>
+    <p className="text-gray-600 line-clamp-2">
+      {entity.description}
+    </p>
+  </div>
+  <p className="text-orange-500 font-bold flex items-center justify-end">
+    {entity.category_name}
+  </p>
+</div>
 
-                <div className="p-4 flex-grow flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2 flex items-center">
-                      {entity.name}
-                    </h3>
-                    <p className={`font-bold flex items-center mb-2 ${getCategoryDetails(entity.category_name).color}`}>
-                      {getCategoryDetails(entity.category_name).icon}
-                      <span className="ml-2">{entity.category_name}</span>
-                    </p>
-
-                    <p className="text-orange-500 font-bold flex items-center">
-                      <FaRoute className="mr-2" />
-                      ระยะห่าง {convertMetersToKilometers(entity.distance)} กิโลเมตร
-                    </p>
-                  </div>
-
-                  {/* Status Section (Open/Closed) */}
-                  <div className="flex justify-end mt-5">
-                    {isOpenNow(entity.operating_hours) ? (
-                      <span className="text-green-500 font-bold flex items-center mr-2">
-                        <FaCheckCircle className="mr-1" /> เปิดทำการ
-                      </span>
-                    ) : (
-                      <span className="text-red-500 font-bold flex items-center mr-2">
-                        <FaTimesCircle className="mr-1" /> ปิดทำการ
-                      </span>
-                    )}
-                  </div>
-                </div>
               </div>
             </Link>
           </div>
