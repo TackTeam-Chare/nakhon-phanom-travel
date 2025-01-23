@@ -3,8 +3,6 @@
 import React from "react"
 import {
   FaFacebook,
-  FaYoutube,
-  FaTiktok,
   FaEnvelope,
   FaUser
 } from "react-icons/fa"
@@ -43,18 +41,6 @@ export default function Footer() {
               className="text-2xl hover:text-gray-200 transition duration-300"
             >
               <FaFacebook />
-            </a>
-            <a
-              href="https://www.youtube.com"
-              className="text-2xl hover:text-gray-200 transition duration-300"
-            >
-              <FaYoutube />
-            </a>
-            <a
-              href="https://www.tiktok.com"
-              className="text-2xl hover:text-gray-200 transition duration-300"
-            >
-              <FaTiktok />
             </a>
           </div>
         </div>

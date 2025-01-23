@@ -1,4 +1,4 @@
- "use client"
+"use client"
 import React, { useEffect, useState } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
@@ -227,20 +227,20 @@ const PlaceNearbyPage = ({ params }) => {
     fetchTourismData();
   }, [id]);
 
-  if (!isLoaded) {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen">
-        <ClipLoader size={50} color={"#FF7043"} loading={!isLoaded} />
-        <p className="mt-4 text-gray-600">กำลังโหลดแผนที่...</p>
-      </div>
-    );
-  }
+  // if (!isLoaded) {
+  //   return (
+  //                <div className="flex flex-col justify-center items-center h-screen">
+  //           <ClipLoader  color={"#FF7043"}  size={50} />
+  //           <span className="ml-4 text-orange-500 font-medium">กำลังโหลดหน้าเว็บ รอสักครู่...</span>
+  //         </div>
+  //   );
+  // }
 
   if (!tourismData) {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <ClipLoader size={50} color={"#FF7043"} loading={!tourismData} />
-        <p className="mt-4 text-gray-600">กำลังโหลดข้อมูลสถานที่ท่องเที่ยว...</p>
+        <span className="ml-4 text-orange-500 font-medium">กำลังโหลดหน้าเว็บ รอสักครู่...</span>
       </div>
     );
   }
@@ -288,154 +288,109 @@ const PlaceNearbyPage = ({ params }) => {
         </div>
 
         {/* Information about the place */}
-        <div className="w-full lg:w-1/2 space-y-6">
-          {/* Place Name */}
-          <h1 className="text-4xl md:text-3xl lg:text-5xl font-bold text-orange-500">
-            {tourismData.name}
-          </h1>
+      {/* Information about the place */}
+<div className="w-full lg:w-1/2 space-y-6">
+  {/* Place Name */}
+  <h1 className="text-4xl md:text-3xl lg:text-5xl font-bold text-orange-500 break-words">
+    {tourismData.name}
+  </h1>
 
-          {/* District and Category */}
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center text-lg">
-              <FaMapMarkerAlt className="text-orange-500 mr-2 text-2xl" />
-              <strong className="text-gray-700">{tourismData.district_name}</strong>
-            </div>
-            <div className="flex items-center text-lg text-orange-500  ">
-              {getCategoryDetails(tourismData.category_name).icon}
-              <strong className="ml-2 text-black  font-bold">
-                {tourismData.category_name}
-              </strong>
-            </div>
-            {/* Check if it's a tourist spot */}
-            {tourismData.category_name === "สถานที่ท่องเที่ยว" && (
-              <div className={`flex items-center text-lg ${getSeasonColor(tourismData.season_name)}`}>
-                {getSeasonIcon(tourismData.season_name)}
-                <strong className={`ml-2 ${getSeasonColor(tourismData.season_name)}`}>
-                  {tourismData.season_name}
-                </strong>
-              </div>
-            )}
-          </div>
-
-          {/* Description */}
-          <div className="flex items-center text-gray-600">
-            <FaInfoCircle className="text-orange-500 mr-2 text-3xl" />
-            <span>{tourismData.description}</span>
-          </div>
-
-          {/* Location */}
-          <div className="flex items-center text-gray-600">
-            <FaHome className="text-orange-500 mr-2 text-3xl" />
-            <span>{tourismData.location}</span>
-          </div>
-
-          {/* Open/Closed Status */}
-          {tourismData.category_name !== "ที่พัก" && (
-            <div className="flex items-center font-bold text-lg">
-              {isOpenNow(tourismData.operating_hours) ? (
-                <span className="text-green-500 flex items-center">
-                  <FaCheckCircle className="mr-1" /> เปิดทำการ
-                </span>
-              ) : (
-                <span className="text-red-500 flex items-center">
-                  <FaTimesCircle className="mr-1" /> ปิดทำการ
-                </span>
-              )}
-
-              {/* Check for Opening Soon or Closing Soon */}
-              {tourismData.operating_hours.map((hours, index) => {
-                const nextEvent = getTimeUntilNextEvent(hours.opening_time, hours.closing_time);
-
-                if (nextEvent.status === "Opening Soon") {
-                  return (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-<span key={index} className="text-yellow-500 flex items-center ml-4">
-                      <FaClock className="mr-1" /> ใกล้เปิดเร็วๆนี้
-                    </span>
-                  );
-                // biome-ignore lint/style/noUselessElse: <explanation>
-                } else if (nextEvent.status === "Closing Soon") {
-                  return (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-<span key={index} className="text-orange-500 flex items-center ml-4">
-                      <FaClock className="mr-1" /> ใกล้ปิดเร็วๆนี้
-                    </span>
-                  );
-                }
-                return null;
-              })}
-            </div>
-          )}
-
-          {/* Operating Hours */}
-          {tourismData.category_name !== "ที่พัก" && (
-            <div className="mt-6 p-4 bg-white rounded-lg shadow-lg">
-              {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-<h2
-                className="text-lg text-orange-500 font-black mb-3 flex items-center cursor-pointer"
-                onClick={toggleOperatingHours}
-              >
-                <FaClock className="text-orange-500 mr-2" />
-                ช่วงวันเวลาทำการของสถานที่
-                {showOperatingHours ? (
-                  <FaChevronUp className="ml-2" />
-                ) : (
-                  <FaChevronDown className="ml-2" />
-                )}
-              </h2>
-
-              {showOperatingHours && tourismData.operating_hours && tourismData.operating_hours.length > 0 ? (
-                <ul className="mt-4">
-                  {tourismData.operating_hours.map((hours, index) => (
-                    <li
-                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                      key={index}
-                      className="flex justify-between items-center py-2 border-b border-gray-200 last:border-none"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <FaCalendarDay className="text-orange-500" />
-                        <span className="font-medium text-gray-700">
-                          {hours.day_of_week === "Sunday"
-                            ? "วันอาทิตย์"
-                            : hours.day_of_week === "Monday"
-                            ? "วันจันทร์"
-                            : hours.day_of_week === "Tuesday"
-                            ? "วันอังคาร"
-                            : hours.day_of_week === "Wednesday"
-                            ? "วันพุธ"
-                            : hours.day_of_week === "Thursday"
-                            ? "วันพฤหัสบดี"
-                            : hours.day_of_week === "Friday"
-                            ? "วันศุกร์"
-                            : hours.day_of_week === "Saturday"
-                            ? "วันเสาร์"
-                            : hours.day_of_week === "Everyday"
-                            ? "ทุกวัน"
-                            : hours.day_of_week === "Except Holidays"
-                            ? "ยกเว้นวันหยุด"
-                            : hours.day_of_week}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        {hours.opening_time ? (
-                          <>
-                            <FaRegClock className="text-green-500" />
-                            <span>{hours.opening_time}</span>
-                            <FaArrowRight className="text-gray-500 mx-1" />
-                            <FaRegClock className="text-red-500" />
-                            <span>{hours.closing_time}</span>
-                          </>
-                        ) : (
-                          <span className="text-gray-500">ปิด</span>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : showOperatingHours && <p>ช่วงวันเวลาทำการของสถานที่ไม่มีอยู่</p>}
-            </div>
-          )}
+  {/* District and Category */}
+  <div className="flex flex-col space-y-2">
+    <div className="flex items-center text-lg">
+      <FaMapMarkerAlt className="text-orange-500 mr-2 w-6 h-6" />
+      <strong className="text-gray-700 break-words">{tourismData.district_name}</strong>
+    </div>
+    <div className="flex items-center text-lg">
+      <div className="w-6 h-6 flex justify-center items-center text-orange-500">
+        {getCategoryDetails(tourismData.category_name).icon}
+      </div>
+      <strong className="ml-2 text-black font-bold break-words">
+        {tourismData.category_name}
+      </strong>
+    </div>
+    {/* Check if it's a tourist spot */}
+    {tourismData.category_name === "สถานที่ท่องเที่ยว" && (
+      <div className="flex items-center text-lg">
+        <div className="w-6 h-6 flex justify-center items-center">
+          {getSeasonIcon(tourismData.season_name)}
         </div>
+        <strong className="ml-2">{tourismData.season_name}</strong>
+      </div>
+    )}
+  </div>
+
+  {/* Description */}
+  <div className="flex items-start text-gray-600">
+    <FaInfoCircle className="text-orange-500 mr-2 w-6 h-6 flex-shrink-0" />
+    <p className="text-sm sm:text-base break-words">{tourismData.description}</p>
+  </div>
+
+  {/* Location */}
+  <div className="flex items-start text-gray-600">
+    <FaHome className="text-orange-500 mr-2 w-6 h-6 flex-shrink-0" />
+    <p className="text-sm sm:text-base break-words">{tourismData.location}</p>
+  </div>
+
+  {/* Open/Closed Status */}
+  {tourismData.category_name !== "ที่พัก" && (
+    <div className="flex items-center font-bold text-lg">
+      {isOpenNow(tourismData.operating_hours) ? (
+        <span className="text-green-500 flex items-center">
+          <FaCheckCircle className="mr-1 w-6 h-6" /> เปิดทำการ
+        </span>
+      ) : (
+        <span className="text-red-500 flex items-center">
+          <FaTimesCircle className="mr-1 w-6 h-6" /> ปิดทำการ
+        </span>
+      )}
+    </div>
+  )}
+
+  {/* Operating Hours */}
+  {tourismData.category_name !== "ที่พัก" && (
+    <div className="mt-6 p-4 bg-white rounded-lg shadow-lg">
+      <h2
+        className="text-lg text-orange-500 font-black mb-3 flex items-center cursor-pointer"
+        onClick={toggleOperatingHours}
+      >
+        <FaClock className="text-orange-500 mr-2 w-6 h-6" />
+        ช่วงวันเวลาทำการของสถานที่
+        {showOperatingHours ? (
+          <FaChevronUp className="ml-2 w-6 h-6" />
+        ) : (
+          <FaChevronDown className="ml-2 w-6 h-6" />
+        )}
+      </h2>
+      {showOperatingHours && tourismData.operating_hours && tourismData.operating_hours.length > 0 ? (
+        <ul className="mt-4 space-y-2">
+          {tourismData.operating_hours.map((hours, index) => (
+            <li key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-none">
+              <div className="flex items-center space-x-2">
+                <FaCalendarDay className="text-orange-500 w-6 h-6 flex-shrink-0" />
+                <span className="font-medium text-gray-700">{hours.day_of_week}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                {hours.opening_time ? (
+                  <>
+                    <FaRegClock className="text-green-500 w-6 h-6 flex-shrink-0" />
+                    <span>{hours.opening_time}</span>
+                    <FaArrowRight className="text-gray-500 mx-1 w-6 h-6 flex-shrink-0" />
+                    <FaRegClock className="text-red-500 w-6 h-6 flex-shrink-0" />
+                    <span>{hours.closing_time}</span>
+                  </>
+                ) : (
+                  <span className="text-gray-500">ปิด</span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : showOperatingHours && <p>ช่วงวันเวลาทำการของสถานที่ไม่มีอยู่</p>}
+    </div>
+  )}
+</div>
+
       </div>
 
       {/* Map Component */}
@@ -499,11 +454,11 @@ const PlaceNearbyPage = ({ params }) => {
     <h3 className="text-lg font-semibold mb-2 flex items-center">
       {entity.name}
     </h3>
-    <p className="text-gray-600 line-clamp-2">
+    <p className="text-sm sm:text-base line-clamp-2">
       {entity.description}
     </p>
   </div>
-  <p className="text-orange-500 font-bold flex items-center justify-end">
+  <p className="text-orange-500 font-bold flex items-center justify-end mt-5">
     {entity.category_name}
   </p>
 </div>

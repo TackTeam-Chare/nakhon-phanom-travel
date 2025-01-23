@@ -18,19 +18,20 @@ const ReviewCard = ({ review }) => {
 
   return (
     <div
-      className="relative p-6 bg-white backdrop-blur-sm rounded-xl transform transition-all duration-300 ease-out hover:scale-102 group"
+      className="relative p-6 bg-white backdrop-blur-sm rounded-xl transform transition-all duration-300 ease-out hover:scale-105 group"
       style={{
         background: "rgba(255, 255, 255, 0.95)",
-        boxShadow: isHovered 
+        boxShadow: isHovered
           ? "0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05)"
-          : "0 10px 20px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02)"
+          : "0 10px 20px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02)",
+        transition: "all 0.3s ease-out", // Smooth transition for shadow and scaling
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Decorative Elements */}
       <div className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full blur-2xl transition-all duration-300 group-hover:scale-150 opacity-0 group-hover:opacity-100" />
-      
+
       {/* Header Section */}
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center gap-4">
@@ -69,7 +70,6 @@ const ReviewCard = ({ review }) => {
           <div className="flex items-center gap-1">
             {Array.from({ length: 5 }).map((_, index) => (
               <FaStar
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={index}
                 className={`w-4 h-4 ${
                   index < review.rating
@@ -127,7 +127,6 @@ const ReviewSection = ({ rating, reviews }) => {
           <div className="flex items-center justify-center gap-2 mt-4">
             {Array.from({ length: 5 }).map((_, index) => (
               <FaStar
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={index}
                 className={`w-6 h-6 ${
                   index < Math.round(rating)

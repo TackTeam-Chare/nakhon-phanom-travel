@@ -23,8 +23,16 @@ export default function Header() {
   return (
     <header className="bg-orange-500 text-white shadow-md p-4">
       <div className="container mx-auto flex justify-between items-center px-4 md:px-8">
-        <div className="flex items-center space-x-4 md:space-x-10">
-          <div className="text-2xl md:text-4xl font-bold">นครพนม</div>
+         {/* Logo Section */}
+         <div className="flex items-center space-x-4 md:space-x-10">
+          <a href="/" className="flex items-center">
+            <img
+              src="/logo/logo.png" // Replace with your logo path
+              alt="Nakhon Phanom Logo"
+              className="h-8 w-auto md:h-12"
+            />
+            <span className="text-2xl md:text-4xl font-bold ml-2">นครพนม</span>
+          </a>
         </div>
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6">

@@ -2,7 +2,11 @@ import Carousel from "../components/Carousel"
 import NearbyPlaces from "../components/Places/NearbyPlaces"
 import CurrentlyOpenTouristEntities from "../components/Places/CurrentlyOpen"
 import RealTimeSeasonalAttractions from "../components/Places/RealTime"
-import RealTimePlaces from "@/components/Places/RealTimePlaces"
+import Attractions from "@/components/Places/Attractions"
+import Accommodations from "@/components/Places/Accommodations"
+import Restaurants from "@/components/Places/Restaurants"
+import SouvenirShops from "@/components/Places/SouvenirShops"
+
 export const metadata = {
   title: "เว็บไซต์เเนะนำการท่องเที่ยวจังหวัดนครพนม",
   description:
@@ -26,7 +30,16 @@ export default function Home() {
         <CurrentlyOpenTouristEntities />
       </div>
       <div>
-        <RealTimePlaces />
+        <Attractions />
+      </div>
+      <div>
+        <Accommodations />
+      </div>
+      <div>
+        <Restaurants />
+      </div>
+      <div>
+        <SouvenirShops />
       </div>
     </>
   )

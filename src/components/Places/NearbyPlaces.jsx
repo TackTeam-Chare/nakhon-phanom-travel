@@ -162,7 +162,7 @@ const NearbyPlaces = () => {
                       <h3 className="text-lg font-semibold mb-2">
                         {place.name}
                       </h3>
-                      <p className="text-gray-600 line-clamp-2">
+                      <p className="text-gray-600 line-clamp-4">
                       {place.description}
                     </p>
                     </div>

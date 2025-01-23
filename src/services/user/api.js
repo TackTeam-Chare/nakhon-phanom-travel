@@ -331,7 +331,18 @@ export const fetchTouristAttractions = async () => {
 export const fetchAccommodations = async () => {
   try {
     const response = await api.get("/accommodations")
-    return response.data
+    const data = Array.isArray(response.data) ? response.data : []
+
+    return data.map(place => ({
+      ...place,
+      image_url: place.images
+        ? place.images.map(
+            image =>
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${image.image_path}`
+          )
+        : []
+    }))
+  
   } catch (error) {
     console.error("Error fetching accommodations:", error)
     throw error
@@ -342,7 +353,17 @@ export const fetchAccommodations = async () => {
 export const fetchRestaurants = async () => {
   try {
     const response = await api.get("/restaurants")
-    return response.data
+    const data = Array.isArray(response.data) ? response.data : []
+
+    return data.map(place => ({
+      ...place,
+      image_url: place.images
+        ? place.images.map(
+            image =>
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${image.image_path}`
+          )
+        : []
+    }))
   } catch (error) {
     console.error("Error fetching restaurants:", error)
     throw error
@@ -353,7 +374,17 @@ export const fetchRestaurants = async () => {
 export const fetchSouvenirShops = async () => {
   try {
     const response = await api.get("/souvenir-shops")
-    return response.data
+    const data = Array.isArray(response.data) ? response.data : []
+
+    return data.map(place => ({
+      ...place,
+      image_url: place.images
+        ? place.images.map(
+            image =>
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${image.image_path}`
+          )
+        : []
+    }))
   } catch (error) {
     console.error("Error fetching souvenir shops:", error)
     throw error
