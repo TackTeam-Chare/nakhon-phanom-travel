@@ -365,7 +365,8 @@ const PlaceNearbyPage = ({ params }) => {
       {showOperatingHours && tourismData.operating_hours && tourismData.operating_hours.length > 0 ? (
         <ul className="mt-4 space-y-2">
           {tourismData.operating_hours.map((hours, index) => (
-            <li key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-none">
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<li key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-none">
               <div className="flex items-center space-x-2">
                 <FaCalendarDay className="text-orange-500 w-6 h-6 flex-shrink-0" />
                 <span className="font-medium text-gray-700">{hours.day_of_week}</span>
