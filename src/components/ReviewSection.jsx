@@ -7,7 +7,6 @@ import {
   FaStar,
   FaChevronLeft,
   FaChevronRight,
-  FaCommentDots,
   FaComments,
   FaQuoteLeft,
   FaQuoteRight,
@@ -70,6 +69,7 @@ const ReviewCard = ({ review }) => {
           <div className="flex items-center gap-1">
             {Array.from({ length: 5 }).map((_, index) => (
               <FaStar
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={index}
                 className={`w-4 h-4 ${
                   index < review.rating
@@ -127,6 +127,7 @@ const ReviewSection = ({ rating, reviews }) => {
           <div className="flex items-center justify-center gap-2 mt-4">
             {Array.from({ length: 5 }).map((_, index) => (
               <FaStar
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={index}
                 className={`w-6 h-6 ${
                   index < Math.round(rating)

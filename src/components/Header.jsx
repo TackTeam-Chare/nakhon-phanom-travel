@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import Link from 'next/link'
 import { Dialog, Disclosure, Popover } from "@headlessui/react"
 import {
   Bars3Icon,
@@ -25,14 +26,14 @@ export default function Header() {
       <div className="container mx-auto flex justify-between items-center px-4 md:px-8">
          {/* Logo Section */}
          <div className="flex items-center space-x-4 md:space-x-10">
-          <a href="/" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <img
               src="/logo/logo.png" // Replace with your logo path
               alt="Nakhon Phanom Logo"
               className="h-8 w-auto md:h-12"
             />
             <span className="text-2xl md:text-4xl font-bold ml-2">นครพนม</span>
-          </a>
+          </Link>
         </div>
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6">
@@ -40,14 +41,15 @@ export default function Header() {
             { href: "/", icon: HomeIcon, text: "หน้าเเรก" },
             { href: "/search", icon: MagnifyingGlassIcon, text: "ค้นหาสถานที่" }
           ].map((item, index) => (
-            <a
+            <Link
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               key={index}
               href={item.href}
               className="flex items-center text-lg hover:text-white hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
             >
               <item.icon className="h-5 w-5 mr-1" />
               {item.text}
-            </a>
+            </Link>
           ))}
           <Popover className="relative">
             <Popover.Button className="flex items-center text-lg hover:text-white hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2">
@@ -89,32 +91,33 @@ export default function Header() {
                     text: "ร้านค้าของฝาก"
                   }
                 ].map((item, index) => (
-                  <a
+                  <Link
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                     key={index}
                     href={item.href}
                     className="flex items-center rounded-lg py-2 px-4 hover:bg-orange-600 hover:text-white transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     <item.icon className="h-5 w-5 mr-2" />
                     {item.text}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </Popover.Panel>
           </Popover>
-          <a
+          <Link
             href="/auth/login"
             className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
           >
             <UserIcon className="h-5 w-5 mr-2" />
             เข้าสู่ระบบ
-          </a>
-          <a
+          </Link>
+          <Link
             href="/about"
             className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
           >
             <InformationCircleIcon className="h-5 w-5 mr-2" />
             เกี่ยวกับ
-          </a>
+          </Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -138,9 +141,9 @@ export default function Header() {
         <div className="fixed inset-0 z-10 bg-black bg-opacity-30" />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-20 w-full max-w-sm overflow-y-auto bg-orange-500 text-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="/" className="text-4xl font-bold">
+            <Link href="/" className="text-4xl font-bold">
               นครพนม
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
@@ -158,7 +161,7 @@ export default function Header() {
                 text: "ค้นหาสถานที่"
               }
             ].map((item, index) => (
-              <a
+              <Link
                 // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={index}
                 href={item.href}
@@ -166,7 +169,7 @@ export default function Header() {
               >
                 <item.icon className="h-5 w-5 mr-2" />
                 {item.text}
-              </a>
+              </Link>
             ))}
             <Disclosure as="div">
             <Disclosure.Button className="group flex w-full items-start  justify-start rounded-lg py-2 px-4 text-lg hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105">
@@ -208,31 +211,32 @@ export default function Header() {
                     text: "ร้านค้าของฝาก"
                   }
                 ].map((item, index) => (
-                  <a
+                  <Link
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                     key={index}
                     href={item.href}
                     className="flex items-center rounded-lg py-2 px-4 hover:bg-orange-600 hover:text-white transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     <item.icon className="h-5 w-5 mr-2" />
                     {item.text}
-                  </a>
+                  </Link>
                 ))}
               </Disclosure.Panel>
             </Disclosure>
-            <a
+            <Link
               href="/auth/login"
               className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
             >
               <UserIcon className="h-5 w-5 mr-2" />
               เข้าสู่ระบบ
-            </a>
-            <a
+            </Link>
+            <Link
               href="/about"
               className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
             >
               <InformationCircleIcon className="h-5 w-5 mr-2" />
               เกี่ยวกับ
-            </a>
+            </Link>
           </div>
         </Dialog.Panel>
       </Dialog>

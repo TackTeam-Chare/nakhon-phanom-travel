@@ -74,9 +74,6 @@ const getSeasonIcon = (seasonName) => {
   }
 };
 
-const getSeasonColor = (seasonName) => {
-  return "text-black font-bold";  // เปลี่ยนสีข้อความเป็นสีดำและตัวหนา
-};
 
 
 const CustomLeftArrow = ({ onClick }) => (
@@ -148,29 +145,6 @@ const isOpenNow = (operatingHours) => {
   }
 
   return false;
-};
-
-// Helper function to check if the place is "Opening Soon" or "Closing Soon"
-const getTimeUntilNextEvent = (openingTime, closingTime) => {
-  const now = getCurrentTimeInThailand();
-  const currentTime = now.getHours() * 100 + now.getMinutes(); // Current time in HHMM format
-
-  const openingTimeInt = Number.parseInt(openingTime.replace(":", ""));
-  const closingTimeInt = Number.parseInt(closingTime.replace(":", ""));
-
-  if (currentTime < openingTimeInt) {
-    const timeUntilOpen = openingTimeInt - currentTime;
-    if (timeUntilOpen <= 100) {
-      return { status: "Opening Soon" };
-    }
-  } else if (currentTime < closingTimeInt) {
-    const timeUntilClose = closingTimeInt - currentTime;
-    if (timeUntilClose <= 100) {
-      return { status: "Closing Soon" };
-    }
-  }
-
-  return { status: null };
 };
 
 const PlaceNearbyPage = ({ params }) => {
@@ -286,8 +260,6 @@ const PlaceNearbyPage = ({ params }) => {
             )}
           </Slide>
         </div>
-
-        {/* Information about the place */}
       {/* Information about the place */}
 <div className="w-full lg:w-1/2 space-y-6">
   {/* Place Name */}

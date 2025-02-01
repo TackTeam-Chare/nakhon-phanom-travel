@@ -131,16 +131,6 @@ const MapSearch = ({
     },
   ];
 
-  const convertMetersToKilometers = (meters) => {
-    if (!meters && meters !== 0) {
-      return "ไม่ทราบระยะทาง"; // ในกรณีที่ meters เป็น null หรือ undefined
-    }
-
-    if (meters >= 1000) {
-      return (meters / 1000).toFixed(2) + " กิโลเมตร";
-    }
-    return meters.toFixed(0) + " เมตร";
-  };
 
   return (
     <GoogleMap
@@ -214,7 +204,7 @@ const MapSearch = ({
         const lat = Number(place.latitude);
         const lng = Number(place.longitude);
 
-        if (isNaN(lat) || isNaN(lng)) {
+        if (Number.isNaN(lat) || Number.isNaN(lng)) {
           console.warn(`Invalid coordinates for place ID: ${place.id}`);
           return null;
         }
@@ -242,7 +232,7 @@ const MapSearch = ({
         const lat = Number(place.latitude);
         const lng = Number(place.longitude);
 
-        if (isNaN(lat) || isNaN(lng)) {
+        if (Number.isNaN(lat) || Number.isNaN(lng)) {
           console.warn(`Invalid coordinates for place ID: ${place.id}`);
           return null;
         }
@@ -253,7 +243,7 @@ const MapSearch = ({
             position={{ lat, lng }}
             icon={{
               url:
-                place.images && place.images[0]?.image_url
+                place.images?.[0]?.image_url
                   ? place.images[0].image_url
                   : "/icons/place-nearby.png",
               scaledSize: new window.google.maps.Size(40, 40),
@@ -296,7 +286,7 @@ const MapSearch = ({
           <div className="flex flex-col md:flex-row items-center max-w-md p-4 bg-white rounded-lg shadow-lg text-gray-800 space-y-4 md:space-y-0 md:space-x-4">
             <NextImage
               src={
-                selectedPlace.images && selectedPlace.images[0]?.image_url
+                selectedPlace.images?.[0]?.image_url
                   ? selectedPlace.images[0].image_url
                   : "/icons/place-nearby.png"
               }
@@ -322,7 +312,7 @@ const MapSearch = ({
               </p> */}
 
               <div className="flex space-x-2 mt-4">
-                <a
+                <Link
                   href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.latitude},${selectedPlace.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -330,7 +320,7 @@ const MapSearch = ({
                 >
                   <FaDirections className="inline-block" />
                   <span>นำทาง</span>
-                </a>
+                </Link>
 
                 <Link
                   href={`/place/${selectedPlace.id}`}

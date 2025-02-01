@@ -5,6 +5,7 @@ import Image from "next/image";
 import ClipLoader from "react-spinners/ClipLoader";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { fetchTouristAttractions } from "@/services/api/api";
 
 const Carousel = () => {
   const [places, setPlaces] = useState([]);
@@ -12,20 +13,9 @@ const Carousel = () => {
 
   useEffect(() => {
     const fetchPlaces = async () => {
-      try {
-        const response = await fetch("/api/tourist-attractions");
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-          setPlaces(data);
-        } else {
-          setPlaces([]);
-        }
-      } catch (error) {
-        setPlaces([]);
-      } finally {
-        setLoading(false);
-      }
+      const data = await fetchTouristAttractions();
+      setPlaces(data);
+      setLoading(false);
     };
 
     fetchPlaces();

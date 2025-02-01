@@ -7,6 +7,7 @@ module.exports = {
     NEXT_PUBLIC_SOCKET_IO_URL: process.env.NEXT_PUBLIC_SOCKET_IO_URL,
     TAT_API_KEY: process.env.TAT_API_KEY,
     TAT_BASE_URL: process.env.TAT_BASE_URL,
+    TAT_EVENTS_URL: process.env.TAT_EVENTS_URL,
   },
   images: {
     domains: [

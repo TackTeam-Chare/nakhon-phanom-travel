@@ -6,6 +6,7 @@ import Attractions from "@/components/Places/Attractions"
 import Accommodations from "@/components/Places/Accommodations"
 import Restaurants from "@/components/Places/Restaurants"
 import SouvenirShops from "@/components/Places/SouvenirShops"
+import RealTimeEvents from "@/components/Places/RealTimeEvents"
 
 export const metadata = {
   title: "เว็บไซต์เเนะนำการท่องเที่ยวจังหวัดนครพนม",
@@ -22,6 +23,9 @@ export default function Home() {
       </div>
       <div>
         <RealTimeSeasonalAttractions />
+      </div>
+      <div>
+        <RealTimeEvents />
       </div>
       <div>
         <NearbyPlaces />

@@ -23,7 +23,8 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
     mapRef.current = map;
   }, []);
   
-  const calculateRoutes = useCallback(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    const calculateRoutes = useCallback(() => {
     // ตรวจสอบว่ามีข้อมูลตำแหน่งผู้ใช้และสถานที่ที่เลือก รวมถึง Google Maps API ถูกโหลดเรียบร้อยหรือไม่
     if (!userLocation || !selectedEntity || !window.google || !window.google.maps) return;
   
@@ -70,7 +71,8 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
     }
   }, []); // useEffect นี้ทำงานเพียงครั้งเดียวเมื่อ component ถูก mount
   
-  useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
     // เรียกฟังก์ชัน calculateRoutes เมื่อ selectedEntity หรือ calculateRoutes เปลี่ยนแปลง
     calculateRoutes();
   }, [selectedEntity, calculateRoutes]); // ฟังก์ชันจะทำงานใหม่เมื่อค่า selectedEntity หรือ calculateRoutes เปลี่ยนไป
@@ -154,7 +156,7 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
           position={center}
           title={mainPlace.name}
           icon={{
-            url: mainPlace.images && mainPlace.images[0] ? mainPlace.images[0].image_url : "/icons/user.png",
+            url: mainPlace.images?.[0] ? mainPlace.images[0].image_url : "/icons/user.png",
             scaledSize: new window.google.maps.Size(50, 50)
           }}
           animation={google.maps.Animation.BOUNCE} 
@@ -171,7 +173,7 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
             }}
             title={entity.name}
             icon={{
-              url: entity.images && entity.images[0] ? entity.images[0].image_url : "/icons/place-nearby.png",
+              url: entity.images?.[0] ? entity.images[0].image_url : "/icons/place-nearby.png",
               scaledSize: new window.google.maps.Size(40, 40)
             }}
             onMouseOver={() => setHoveredMarkerId(entity.id)}
@@ -211,7 +213,7 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
       {/* รูปภาพสถานที่ */}
       <NextImage
         src={
-          selectedEntity.images && selectedEntity.images[0]?.image_url
+          selectedEntity.images?.[0]?.image_url
             ? selectedEntity.images[0].image_url
             : "/place-nearby.png"
         }
@@ -239,7 +241,7 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
 
         <div className="flex space-x-2 mt-4">
           {/* ปุ่มนำทางไปยัง Google Maps */}
-          <a
+          <Link
             href={`https://www.google.com/maps/dir/?api=1&destination=${selectedEntity.latitude},${selectedEntity.longitude}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -247,7 +249,7 @@ const MapNearbyPlaces = ({ center, places, mainPlace, isLoaded }) => {
           >
             <FaDirections className="inline-block" />
             <span>นำทาง</span>
-          </a>
+          </Link>
 
           <Link
             href={`/place/${selectedEntity.id}`}

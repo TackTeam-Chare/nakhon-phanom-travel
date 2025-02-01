@@ -6,6 +6,7 @@ import {
   FaEnvelope,
   FaUser
 } from "react-icons/fa"
+import Link from 'next/link'
 
 export default function Footer() {
   return (
@@ -36,12 +37,12 @@ export default function Footer() {
             <span>tackteam.dev@gmail.com</span>
           </p>
           <div className="flex justify-center md:justify-end space-x-4">
-            <a
+            <Link
               href="https://www.facebook.com/chare.uppachittan"
               className="text-2xl hover:text-gray-200 transition duration-300"
             >
               <FaFacebook />
-            </a>
+            </Link>
 
           </div>
         </div>

@@ -79,7 +79,8 @@ const TouristAttractionsPage = () => {
 
       {/* District Buttons */}
       <div className="flex flex-wrap gap-3 justify-center mb-6">
-        <button
+        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
           onClick={() => handleDistrictChange(null)}
           className={`py-2 px-4 rounded-full hover:bg-orange-300 transition duration-200 ${
             selectedDistrict === null
@@ -90,7 +91,8 @@ const TouristAttractionsPage = () => {
           สถานที่ท่องเที่ยวทั้งหมด
         </button>
         {districts.map(district => (
-          <button
+          // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
             key={district.id}
             onClick={() => handleDistrictChange(district.id)}
             className={`py-2 px-4 rounded-full hover:bg-orange-300 transition duration-200 ${
@@ -108,7 +110,7 @@ const TouristAttractionsPage = () => {
         {paginatedAttractions.map(attraction => (
           <Link href={`/place/${attraction.id}`} key={attraction.id}>
             <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out flex flex-col h-full">
-              {attraction.image_url && attraction.image_url[0] ? (
+              {attraction.image_url?.[0] ? (
                 <Image
                   src={attraction.image_url[0]}
                   alt={attraction.name}
@@ -157,7 +159,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <div className="flex justify-center mt-8">
-      <button
+      {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className="mx-1 px-3 py-2 bg-orange-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gradient-to-r hover:from-orange-400 hover:to-orange-600 transform hover:scale-105 transition duration-300 ease-in-out"
@@ -165,7 +168,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         ก่อนหน้า
       </button>
       {pages.map(page => (
-        <button
+        // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
           key={page}
           onClick={() => onPageChange(page)}
           className={`mx-1 px-3 py-2 rounded-lg transform transition duration-300 ease-in-out ${
@@ -177,7 +181,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           {page}
         </button>
       ))}
-      <button
+      {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className="mx-1 px-3 py-2 bg-orange-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gradient-to-r hover:from-orange-400 hover:to-orange-600 transform hover:scale-105 transition duration-300 ease-in-out"
