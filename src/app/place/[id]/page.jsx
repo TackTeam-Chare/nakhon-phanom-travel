@@ -350,7 +350,8 @@ const PlaceNearbyPage = ({ params }) => {
   {/* Operating Hours */}
   {tourismData.category_name !== "ที่พัก" && (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-lg">
-      <h2
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+<h2
         className="text-lg text-orange-500 font-black mb-3 flex items-center cursor-pointer"
         onClick={toggleOperatingHours}
       >

@@ -159,6 +159,7 @@ export default function Header() {
               }
             ].map((item, index) => (
               <a
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={index}
                 href={item.href}
                 className="flex items-center text-lg text-white hover:bg-orange-600 rounded-md px-4 py-2 transition duration-300 ease-in-out transform hover:scale-105"

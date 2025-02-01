@@ -1,155 +1,87 @@
-"use client"
-import Slider from "react-slick"
-import Image from "next/image"
-import "slick-carousel/slick/slick.css"
-import "slick-carousel/slick/slick-theme.css"
+"use client";
+import { useEffect, useState } from "react";
+import Slider from "react-slick";
+import Image from "next/image";
+import ClipLoader from "react-spinners/ClipLoader";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Carousel = () => {
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const response = await fetch("/api/tourist-attractions");
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          setPlaces(data);
+        } else {
+          setPlaces([]);
+        }
+      } catch (error) {
+        setPlaces([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlaces();
+  }, []);
+
   const settings = {
     dots: true,
     infinite: true,
-    speed: 200,
+    speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
-    arrows: true
-  }
-
-  const slides = [
-    {
-      id: 1,
-      title: "พญาศรีสัตตนาคราช ",
-      subtitle: "รูปปั้นพญาศรีสัตตนาคราชทำจากทองเหลืองน้ำหนักกว่า 9 ตัน มีการออกแบบและแกะสลักอย่างประณีต เพื่อให้สื่อถึงความยิ่งใหญ่และสง่างามของพญานาค ซึ่งเป็นสิ่งศักดิ์สิทธิ์ตามความเชื่อของชาวอีสานและลาว",
-      description:
-        "พญาศรีสัตตนาคราช เป็นหนึ่งในสถานที่ท่องเที่ยวที่สำคัญของจังหวัดนครพนม ตั้งอยู่ริมฝั่งแม่น้ำโขง บริเวณลานพญาศรีสัตตนาคราช ซึ่งเป็นแลนด์มาร์คที่มีความสำคัญทางวัฒนธรรมและศาสนาของจังหวัด โดยเฉพาะอย่างยิ่งสำหรับคนที่นับถือความเชื่อเรื่องพญานาค",
-      imageUrl: "https://www.chillpainai.com/src/wewakeup/scoop/images/96e0e32cd1a72cc7b5bee505bc011bc9861c8c2f.jpg"
-    },
-    {
-      id: 2,
-      title: "วัดพระธาตุพนมวรมหาวิหาร",
-      subtitle: "เป็นวัดสำคัญในภาคตะวันออกเฉียงเหนือของประเทศไทย ตั้งอยู่ในอำเภอธาตุพนม จังหวัดนครพนม",
-      description:
-        "เป็นที่ตั้งของ พระธาตุพนม ซึ่งเป็นเจดีย์บรรจุพระบรมสารีริกธาตุของพระพุทธเจ้าและเป็นศูนย์รวมศรัทธาของชาวไทยและลาว พระธาตุพนมถือเป็นปูชนียสถานที่มีความสำคัญทางศาสนาและประวัติศาสตร์มาช้านาน คนไทยและชาวลาวต่างพากันมากราบไหว้บูชาเพื่อความเป็นสิริมงคล เชื่อกันว่าใครได้มาสักการะพระธาตุพนมจะได้รับอานิสงส์และโชคลาภ",
-      imageUrl:
-        "https://www.thatphanom.go.th/wp-content/uploads/2022/10/P03013359_1.jpeg"
-    },
-    {
-      id: 3,
-      title: "Street art นครพนม",
-      subtitle: "ตั้งอยู่บริเวณสวนชมโขง หน้าศาลากลาง จังหวัดนครพนม",
-      description:
-        "มีผลงานสวย ๆ ให้เลือกถ่ายรูปมากมาย ไม่ว่าจะเป็นภาพวิถีชีวิตของชาวอีสาน, รถสามล้อ, หอนาฬิกาเวียดนามนุสรณ์ และบุคคลสำคัญที่มีความเกี่ยวข้องกับประวัติศาสตร์ของนครพนม บอกเลยว่าแต่ละภาพสวยงามมีเอกลักษาณ์ เหมาะแก่การมาถ่ายรูปเช็คอิน",
-      imageUrl:
-        "https://www.chillpainai.com/src/wewakeup/scoop/images/12735d30601fc294cef3a7c35575317c970f1e21.jpg"
-    },
-    {
-      id: 4,
-      title: "พิพิธภัณฑ์จวนผู้ว่าราชการจังหวัดนครพนม (หลังเก่า)",
-      subtitle: "เป็นสถานที่สำคัญทางประวัติศาสตร์ที่ตั้งอยู่ในตัวเมืองนครพนม",
-      description:
-        "อาคารนี้เคยเป็นที่พักของผู้ว่าราชการจังหวัด และเป็นตัวอย่างของสถาปัตยกรรมโคโลเนียลที่ได้รับอิทธิพลจากฝรั่งเศส โดยโครงสร้างและรูปแบบของอาคารมีเอกลักษณ์เฉพาะตัวที่แสดงถึงความผสมผสานของศิลปะตะวันตกและวัฒนธรรมท้องถิ่น ปัจจุบัน อาคารหลังนี้ได้ถูกปรับปรุงให้เป็นพิพิธภัณฑ์ เพื่ออนุรักษ์และแสดงถึงความเป็นมาของเมืองนครพนม รวมถึงประวัติศาสตร์ของผู้ว่าราชการจังหวัดในอดีต ภายในพิพิธภัณฑ์มีการจัดแสดงสิ่งของโบราณและเอกสารสำคัญเกี่ยวกับการบริหารและวัฒนธรรมของชาวนครพนม",
-      imageUrl: "https://pukmudmuangthai.com/wp-content/uploads/2020/10/%E0%B8%9E%E0%B8%B4%E0%B8%9E%E0%B8%B4%E0%B8%98%E0%B8%A0%E0%B8%B1%E0%B8%93%E0%B8%91%E0%B9%8C%E0%B8%88%E0%B8%A7%E0%B8%99%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%A7%E0%B9%88%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%9E%E0%B8%99%E0%B8%A1%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B9%80%E0%B8%81%E0%B9%88%E0%B8%B2.jpg"
-    },
-    {
-      id: 5,
-      title: "วัดพระธาตุท่าอุเทน  ",
-      subtitle: "ตั้งอยู่ในอำเภอท่าอุเทน จังหวัดนครพนม",
-      description:
-        "พระธาตุท่าอุเทนถูกสร้างขึ้นในปี พ.ศ. 2455 โดยท่านพระอาจารย์สีทัตถ์ ญาณสัมปันโน ซึ่งได้รับแรงบันดาลใจจากการสร้างพระธาตุพนม พระธาตุท่าอุเทนนี้มีความสูงและงดงามด้วยศิลปะแบบล้านช้างที่สวยงามและทรงคุณค่า ภายในบรรจุพระบรมสารีริกธาตุของพระสัมมาสัมพุทธเจ้า และถือเป็นสถานที่ที่มีความศักดิ์สิทธิ์มาก ในทุกปี จะมีงานประเพณีสำคัญในการสักการะบูชาพระธาตุท่าอุเทน ซึ่งดึงดูดทั้งชาวบ้านและนักท่องเที่ยวมาเข้าร่วม เป็นอีกหนึ่งสถานที่ท่องเที่ยวทางศาสนาที่ไม่ควรพลาดเมื่อมาเยือนจังหวัดนครพนม",
-      imageUrl: "https://files.thailandtourismdirectory.go.th/assets/upload/2018/01/25/20180125d41d8cd98f00b204e9800998ecf8427e152806.jpg"
-    },
-    {
-      id: 6,
-      title: "วัดพระธาตุเรณู หรือ วัดธาตุเรณู",
-      subtitle: "ตั้งอยู่ในอำเภอเรณูนคร จังหวัดนครพนม",
-      description:
-        "เป็นวัดสำคัญที่มี พระธาตุเรณู เป็นสิ่งศักดิ์สิทธิ์คู่บ้านคู่เมืองของชาวเรณูนครและพื้นที่ใกล้เคียง พระธาตุเรณูมีความสำคัญทางประวัติศาสตร์และวัฒนธรรม และมีรูปแบบการก่อสร้างที่ได้รับอิทธิพลจากศิลปะล้านช้าง ผสมผสานกับความงดงามของสถาปัตยกรรมแบบพื้นบ้านอีสานพระธาตุเรณู ถูกสร้างขึ้นในปี พ.ศ. 2460 ภายในพระธาตุบรรจุพระบรมสารีริกธาตุและพระไตรปิฎก พระธาตุเรณูมีขนาดเล็กกว่าพระธาตุพนม แต่มีความงดงามไม่แพ้กัน ด้วยลวดลายปูนปั้นและการตกแต่งด้วยทองที่ละเอียดอ่อน ทำให้พระธาตุเรณูมีความงดงามเป็นเอกลักษณ์ ทุกปีจะมีงานบุญประเพณีที่จัดขึ้นเพื่อสักการะพระธาตุเรณู ซึ่งดึงดูดผู้คนจากทั่วทุกสารทิศมาร่วมบุญและเยี่ยมชม เป็นอีกหนึ่งสถานที่ท่องเที่ยวทางศาสนาที่สำคัญในจังหวัดนครพนม",
-      imageUrl: "https://www.phephatiew.com/wp-content/uploads/2022/03/web-01417.jpg"
-    },
-    {
-      id: 7,
-      title: "สะพานมิตรภาพไทย-ลาว 3",
-      subtitle: " เป็นสะพานที่เชื่อมต่อระหว่างประเทศไทยกับประเทศลาว ตั้งอยู่ที่จังหวัดนครพนมฝั่งไทย และแขวงคำม่วนฝั่งลาว สะพานแห่งนี้เปิดใช้อย่างเป็นทางการในปี พ.ศ. 2554 และมีบทบาทสำคัญในการส่งเสริมการค้าขาย การท่องเที่ยว และการคมนาคมระหว่างสองประเทศ",
-      description:
-        "สะพานมิตรภาพไทย-ลาว 3 มีความยาวประมาณ 1,423 เมตร และกว้าง 13 เมตร สร้างขึ้นเพื่อเชื่อมเส้นทางจากอีสานเหนือของไทย ไปสู่ประเทศลาว และเชื่อมโยงไปยังเวียดนามได้อย่างสะดวก ทำให้เป็นเส้นทางที่สำคัญสำหรับการขนส่งสินค้าข้ามพรมแดน รวมถึงเป็นเส้นทางท่องเที่ยวที่นิยมในหมู่นักท่องเที่ยวที่ต้องการเดินทางไปประเทศเพื่อนบ้าน",
-      imageUrl: "https://cbtthailand.dasta.or.th/upload-file-api/Resources/RelateAttraction/Images/RAT480335/1.jpeg"
-    },
-    {
-      id: 8,
-      title: "วัดนักบุญอันนา",
-      subtitle: " เป็นโบสถ์คาทอลิกที่สำคัญในจังหวัดนครพนม ตั้งอยู่ริมฝั่งแม่น้ำโขง ตำบลในเมือง อำเภอเมืองนครพนม",
-      description:
-        "วัดแห่งนี้มีสถาปัตยกรรมที่สวยงาม โดดเด่นด้วยรูปแบบของโบสถ์ที่มีหลังคาทรงสูงและหอระฆังขนาดใหญ่ เป็นสถานที่ที่สำคัญสำหรับชุมชนคริสต์ในพื้นที่วัดนักบุญอันนา หนองแสง ก่อตั้งขึ้นเมื่อปี พ.ศ. 2469 โดยบรรดามิชชันนารีชาวฝรั่งเศส และเป็นศูนย์รวมใจของชาวคริสต์ที่นี่มาหลายยุคหลายสมัย วัดนี้ยังมีบทบาทสำคัญในด้านการเผยแผ่ศาสนาและการทำกิจกรรมทางศาสนาคริสต์ในจังหวัดนครพนมและพื้นที่ใกล้เคียง",
-      imageUrl: "https://files.thailandtourismdirectory.go.th/assets/upload/2021/8/10//0c27bfaf-df0e-487d-8f71-9693486f103d.jpg"
-    },
-    {
-      id: 9,
-      title: "หอนาฬิกาเวียดนามอนุสรณ์",
-      subtitle: "เป็นสถานที่สำคัญที่ตั้งอยู่ในเมืองนครพนม",
-      description:
-        "หอนาฬิกาแห่งนี้สร้างขึ้นเพื่อเป็นอนุสรณ์สำหรับชาวเวียดนามที่อพยพมาตั้งถิ่นฐานในพื้นที่นี้ในอดีต ซึ่งมีความสัมพันธ์ใกล้ชิดกับประวัติศาสตร์การเมืองและวัฒนธรรมของชาวเวียดนามและไทย หอนาฬิกามีการออกแบบสถาปัตยกรรมที่สะท้อนถึงวัฒนธรรมและความเป็นมาของชาวเวียดนาม โดยมีความโดดเด่นด้วยโครงสร้างนาฬิกาที่สูงเด่นและตั้งอยู่ในจุดที่สามารถเห็นได้อย่างชัดเจน วัตถุประสงค์ของการสร้างหอนาฬิกาแห่งนี้คือเพื่อเป็นสัญลักษณ์แห่งความสัมพันธ์อันดีระหว่างชาวไทยและชาวเวียดนามที่อาศัยอยู่ในนครพนม",
-      imageUrl: "https://files.thailandtourismdirectory.go.th/assets/upload/2018/01/24/20180124d09eaffa890e72a0ad30e2a6d67aa852162625.jpg"
-    },
-    {
-      id: 10,
-      title: "ถ้ำนาคี",
-      subtitle: " ตั้งอยู่ในพื้นที่อุทยานแห่งชาติภูลังกา จังหวัดนครพนม",
-      description:
-        "เป็นสถานที่ท่องเที่ยวเชิงธรรมชาติที่มีความสวยงามและมีความเชื่อมโยงกับตำนานของพญานาค ทำให้ถ้ำนาคีกลายเป็นสถานที่ที่มีความศักดิ์สิทธิ์และได้รับความนิยมจากผู้ที่มาแสวงบุญหรือผู้ที่สนใจเรื่องเล่าตำนานของพญานาคลักษณะของถ้ำมีลวดลายหินที่คล้ายกับลำตัวของพญานาค ซึ่งเกิดจากการกัดเซาะของธรรมชาติ ทำให้ถ้ำมีความโดดเด่นและสวยงามไปด้วยลักษณะเฉพาะตัวของหินในถ้ำ และเชื่อกันว่าพื้นที่นี้เป็นที่สถิตของพญานาคที่คอยปกป้องรักษาพื้นที่อันศักดิ์สิทธิ์แห่งนี้",
-      imageUrl: "https://www.prachachat.net/wp-content/uploads/2022/02/8.jpg"
-    },
-
-  ]
+    arrows: true,
+  };
 
   return (
     <div className="w-full">
-      <Slider {...settings}>
-        {slides.map(slide => (
-          <div
-            key={slide.id}
-            className="relative w-full h-[70vh] md:h-[80vh] lg:h-[90vh] overflow-hidden"
-          >
-            <Image
-              src={slide.imageUrl}
-              alt={slide.title}
-              layout="fill"
-              objectFit="cover"
-              quality={100}
-              className="object-cover object-center"
-              priority
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center items-start p-8 md:p-16 lg:p-24">
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-yellow-400">
-                {slide.title}
-              </h2>
-              <h3 className="text-lg md:text-xl lg:text-2xl text-white mt-2">
-                {slide.subtitle}
-              </h3>
-              <p className="text-md md:text-lg lg:text-xl text-white mt-4 max-w-3xl">
-                {slide.description}
-              </p>
-              <p
-                className="absolute bottom-4 right-5  text-base md:text-md text-white "
-                style={{ maxWidth: "300px" }}
-              >
-                {/* รูปภาพ:{slide.imageUrl} */}
-                <a
-                  href={slide.imageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline "
-                >
-                  ดูแหล่งที่มา
-                </a>
-              </p>
+      {loading ? (
+        <div className="flex justify-center items-center h-[80vh]">
+          <ClipLoader color="#FF7043" size={70} />
+        </div>
+      ) : places.length > 0 ? (
+        <Slider {...settings}>
+          {places.map((place) => (
+            <div key={place.placeId} className="relative w-full h-[70vh] md:h-[80vh] lg:h-[90vh] overflow-hidden">
+              <Image
+                src={place.thumbnailUrl}
+                alt={place.name}
+                layout="fill"
+                objectFit="cover"
+                quality={100}
+                className="object-cover object-center"
+                priority
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center items-start p-8 md:p-16 lg:p-24">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-yellow-400">
+                  {place.name}
+                </h2>
+                <h3 className="text-lg md:text-xl lg:text-2xl text-white mt-2">
+                  {place.subDistrict}, {place.district}, {place.province}
+                </h3>
+                <p className="text-md md:text-lg lg:text-xl text-white mt-4 max-w-3xl">
+                  {place.introduction}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      ) : (
+        <div className="flex justify-center items-center h-[80vh] text-white text-lg">
+          ไม่พบข้อมูลสถานที่ท่องเที่ยว
+        </div>
+      )}
     </div>
   );
-  
-}
+};
 
-export default Carousel
+export default Carousel;
