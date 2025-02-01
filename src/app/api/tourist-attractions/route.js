@@ -32,7 +32,11 @@ export async function GET() {
       .map((place) => ({
         placeId: place.placeId,
         name: place.name,
-        introduction: place.introduction || "ไม่มีข้อมูลคำอธิบาย",
+        category: place.category?.name || "ไม่มีหมวดหมู่",
+        subCategories: place.category?.subCategories
+          ? place.category.subCategories.map((sub) => sub.name).join(", ")
+          : "ไม่มีหมวดหมู่ย่อย",
+        introduction: place.information?.introduction || place.information?.detail || "ไม่มีข้อมูลคำอธิบาย",
         address: place.location?.address || "ไม่มีข้อมูลที่อยู่",
         subDistrict: place.location?.subDistrict?.name || "ไม่มีข้อมูลตำบล",
         district: place.location?.district?.name || "ไม่มีข้อมูลอำเภอ",
@@ -40,6 +44,11 @@ export async function GET() {
         postcode: place.location?.postcode || "ไม่มีข้อมูลรหัสไปรษณีย์",
         latitude: place.latitude,
         longitude: place.longitude,
+        contact: {
+          phones: place.contact?.phones?.join(", ") || "ไม่มีข้อมูลโทรศัพท์",
+          emails: place.contact?.emails?.join(", ") || "ไม่มีข้อมูลอีเมล",
+          urls: place.contact?.urls?.join(", ") || "ไม่มีข้อมูลเว็บไซต์",
+        },
         thumbnailUrl: place.thumbnailUrl[0],
         createdAt: place.createdAt,
         updatedAt: place.updatedAt,
