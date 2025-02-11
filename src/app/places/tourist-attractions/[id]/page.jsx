@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { fetchTouristAttractionsById } from "@/services/api/api";
 import Image from "next/image";
 import {
-  MapPin,  Info, Phone, Banknote, Star, Activity, ParkingCircle, Landmark
+  MapPin, Info, Phone, Banknote, Star, Activity, ParkingCircle, Landmark, Clock
 } from "lucide-react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
@@ -19,7 +19,7 @@ const TouristAttractionsPage = () => {
     if (!id) return;
     fetchTouristAttractionsById(id)
       .then((data) => {
-        setPlace(data);
+        setPlace(data.data); // ✅ ดึงข้อมูลจาก API และใช้เฉพาะ data
         setLoading(false);
       })
       .catch((error) => {
@@ -49,11 +49,10 @@ const TouristAttractionsPage = () => {
     <div className="min-h-screen">
       {/* 🔹 Hero Section */}
       <div className="relative w-full h-[75vh]">
-        <Slide easing="ease" duration={3000} transitionDuration={500} indicators arrows cssClass="custom-slide" >
-          {place.mobileImageUrls?.length > 0 ? (
+        <Slide easing="ease" duration={3000} transitionDuration={500} indicators arrows cssClass="custom-slide">
+          {place?.mobileImageUrls?.length > 0 ? (
             place.mobileImageUrls.map((image, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-<div key={index} className="relative w-full h-[75vh]">
+              <div key={index} className="relative w-full h-[75vh]">
                 <Image
                   src={image}
                   alt={`${place.name} - ภาพที่ ${index + 1}`}
@@ -100,17 +99,19 @@ const TouristAttractionsPage = () => {
           </p>
         </div>
 
-        {/* 🔹 กิจกรรมที่ทำได้ */}
-        {place.information?.activities?.length > 0 && (
-          <div>
+        {/* 🔹 วันเวลาเปิด-ปิด */}
+        {place.openingHours?.length > 0 && (
+          <div >
             <h2 className="flex items-center text-2xl text-orange-600 font-bold">
-              <Activity className="w-6 h-6 mr-2" />
-              กิจกรรมที่สามารถทำได้
+              <Clock className="w-6 h-6 mr-2" />
+              วันเวลาเปิด-ปิด
             </h2>
             <ul className="mt-4 text-lg space-y-2">
-              {place.information.activities.map((activity, index) => (
+              {place.openingHours.map((day, index) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-<li key={index} className="text-gray-700">{activity}</li>
+<li key={index} className="text-gray-700">
+                  <span className="font-semibold">{day.day}:</span> {day.open.slice(0, 5)} - {day.close.slice(0, 5)}
+                </li>
               ))}
             </ul>
           </div>
@@ -125,8 +126,7 @@ const TouristAttractionsPage = () => {
             </h2>
             <ul className="mt-4 text-lg space-y-2">
               {place.facilities.map((facility, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-<li key={index} className="text-gray-700">{facility.name}</li>
+                <li key={index} className="text-gray-700">{facility.name}</li>
               ))}
             </ul>
           </div>

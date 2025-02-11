@@ -93,7 +93,10 @@ const RealTimeSeasonalAttractions = () => {
                       {attraction.description}
                     </p>
                   </div>
-                  <p className="text-orange-500 font-bold">{attraction.district_name}</p>
+                  <p className="text-orange-500 font-bold mt-2">{attraction.district_name}</p>
+                  <p className="text-gray-500 text-sm text-end">
+                    {new Date(attraction.created_date).toLocaleDateString("th-TH")} 
+                  </p>
                 </div>
               </div>
             </Link>
