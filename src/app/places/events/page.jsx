@@ -43,7 +43,7 @@ const EventsPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {paginatedEvents.map((event) => (
-          <Link href={`/event/${event.eventId}`} key={event.eventId}>
+          <Link href={`/places/events/${event.eventId}`} key={event.eventId}>
             <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out flex flex-col h-full">
               {event.thumbnailUrl ? (
                 <Image
@@ -65,7 +65,7 @@ const EventsPage = () => {
                   {event.province}
                 </p>
                 <Link
-                  href={`/event/${event.eventId}`}
+                  href={`/places/events/${event.eventId}`}
                   className="text-orange-500 mt-2 font-bold self-end flex items-center hover:underline"
                 >
                   อ่านเพิ่มเติม

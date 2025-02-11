@@ -62,11 +62,26 @@ body {
   font-family: 'IBM Plex Sans Thai', sans-serif;
 }
 
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+.react-slideshow-container .default-nav {
+  width: 45px;
+  height: 45px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+.react-slideshow-container .default-nav:first-of-type {
+  left: 15px !important;
 }
+
+.react-slideshow-container .default-nav:last-of-type {
+  right: 15px !important;
+}
+
+.react-slideshow-container .default-nav:hover {
+  background-color: rgba(255, 85, 0, 0.8);
+}
+
