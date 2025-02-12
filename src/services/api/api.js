@@ -4,7 +4,7 @@ const TAT_API_KEY = process.env.TAT_API_KEY;
 
 export const fetchTouristAttractions = async () => {
     try {
-      const response = await axios.get("api/tourist-attractions");
+      const response = await axios.get("/api/tourist-attractions");
       return response.data || [];
     } catch (error) {
       console.error("Error fetching tourist attractions:", error);
