@@ -665,7 +665,7 @@ const formatTimeTo24Hour = (time) => {
                   <span className="text-gray-500 text-lg">ไม่มีรูปภาพ</span>
                 )}
               </div>
-              <div className="p-4 flex flex-col h-48">
+              <div className="p-4 flex flex-col ">
                 <h3 className="text-xl font-semibold mb-2 line-clamp-1">{place.name}</h3>
                 <p className="text-gray-600 text-sm sm:text-base line-clamp-2 flex-grow">
                   {place.description}
@@ -683,7 +683,7 @@ const formatTimeTo24Hour = (time) => {
         </Link>
       ))
     ) : (
-      <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={4000} arrows>
+      <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={4000} arrows >
         {searchResults.map((place) => (
           <Link href={`/place/${place.id}`} key={place.id}>
             <div className="p-4">
@@ -701,7 +701,7 @@ const formatTimeTo24Hour = (time) => {
                     <span className="text-gray-500 text-lg">ไม่มีรูปภาพ</span>
                   )}
                 </div>
-                <div className="p-4 flex flex-col h-48">
+                <div className="p-4 flex flex-col ">
                   <h3 className="text-xl font-semibold mb-2 line-clamp-1">{place.name}</h3>
                   <p className="text-gray-600 text-sm sm:text-base line-clamp-2 flex-grow">
                     {place.description}
