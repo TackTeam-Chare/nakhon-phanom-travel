@@ -69,7 +69,7 @@ const RealTimeEvents = () => {
                 )}
                 <div className="p-4 flex flex-col flex-grow justify-between">
                   <div className="flex-grow">
-                    <h3 className="text-lg font-semibold">{event.name}</h3>
+                    <h3 className="text-lg font-semibold line-clamp-1">{event.name}</h3>
                     <p className="text-gray-600 line-clamp-4">{event.introduction}</p>
                   </div>
                   <p className="text-orange-500 font-bold">{event.province}</p>

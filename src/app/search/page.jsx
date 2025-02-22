@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
 import {
   FaMapMarkerAlt,
   FaSearch,
@@ -16,7 +16,6 @@ import {
   FaCalendarAlt,
   FaLayerGroup,
   FaLeaf,
-  FaRoute,
   FaSun,
   FaCloudRain,
   FaSnowflake,
@@ -127,8 +126,6 @@ const GeocodingSearchPage = () => {
     // เรียกใช้ฟังก์ชัน updateLocation เมื่อ useEffect ทำงาน
     updateLocation();
   }, [isClient]); // useEffect จะทำงานใหม่เมื่อค่า isClient เปลี่ยนแปลง
-  
-  
 
   const fetchNearbyPlaces = async (lat, lng, radius) => {
     try {
@@ -146,7 +143,21 @@ const GeocodingSearchPage = () => {
       setLoading(false); // ไม่ว่าจะสำเร็จหรือเกิดข้อผิดพลาด หยุดการโหลดเสมอ
     }
   };
-  
+
+  const renderSeasonIcon = (seasonName) => {
+    switch (seasonName) {
+      case "ฤดูร้อน":
+        return <FaSun className="mr-2" />;
+      case "ฤดูฝน":
+        return <FaCloudRain className="mr-2" />;
+      case "ฤดูหนาว":
+        return <FaSnowflake className="mr-2" />;
+      case "ตลอดทั้งปี":
+        return <FaGlobe className="mr-2" />;
+      default:
+        return <FaLeaf className="mr-2" />;
+    }
+  };
 
   const searchPlaces = async (params) => {
     try {
@@ -175,7 +186,6 @@ const GeocodingSearchPage = () => {
       setLoading(false); // ไม่ว่าการค้นหาจะสำเร็จหรือเกิดข้อผิดพลาด จะหยุดการโหลดเสมอ
     }
   };
-  
 
   const handleSearchByField = (field, value) => {
     // ล้างผลการค้นหาและสถานที่ใกล้เคียงเมื่อมีการอัปเดตฟิลด์ใด ๆ
@@ -224,7 +234,6 @@ const GeocodingSearchPage = () => {
       setSelectedDay(value); // อัปเดตวันใน state
     }
   };
-  
 
   const handleCurrentLocationClick = () => {
     // ตรวจสอบว่าฟังก์ชัน geolocation รองรับโดยเบราว์เซอร์หรือไม่
@@ -279,42 +288,23 @@ const GeocodingSearchPage = () => {
     setIsTimeFilterVisible(false);
   };
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    arrows: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-    ]
-  };
-
-  const convertMetersToKilometers = (meters) => {
-    if (!meters && meters !== 0) {
-      return "ไม่ทราบระยะทาง";  // ในกรณีที่ meters เป็น null หรือ undefined
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1
     }
-  
-    if (meters >= 1000) {
-      return (meters / 1000).toFixed(2) + ' กิโลเมตร';
-    }
-    return meters.toFixed(0) + ' เมตร';
   };
 
 // ฟังก์ชันสำหรับลบข้อมูลที่ซ้ำกันในอาร์เรย์ของสถานที่
@@ -350,7 +340,8 @@ const formatTimeTo24Hour = (time) => {
       {/* Search Bar and Buttons */}
       <div className="flex flex-col lg:flex-row items-center justify-center mb-6">
         <div className="relative w-full lg:max-w-md mx-auto flex items-center justify-center mb-4 lg:mb-0">
-          <button
+          {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
             onClick={handleCurrentLocationClick}
             className="bg-orange-500 text-white p-3 rounded-full hover:bg-orange-600 transition duration-300"
             aria-label="Check current location"
@@ -373,7 +364,8 @@ const formatTimeTo24Hour = (time) => {
             searchParams.category ||
             searchParams.district ||
             searchParams.season ? (
-              <button
+              // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
                 onClick={clearSearch}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-orange-500"
                 aria-label="Clear search"
@@ -387,7 +379,8 @@ const formatTimeTo24Hour = (time) => {
 
       {/* Toggle Buttons for Categories, Seasons, Districts, and Days */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 justify-center mb-4">
-        <button
+        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
           onClick={() => {
             resetTogglesAndSearch();
             setIsCategoryDropdownOpen(prev => (prev ? null : "category"));
@@ -399,7 +392,8 @@ const formatTimeTo24Hour = (time) => {
         </button>
 
         {/* Disable/Enable Season button based on category */}
-        <button
+        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
           onClick={() => {
             resetTogglesAndSearch();
             setIsSeasonDropdownOpen(prev => (prev ? null : "season"));
@@ -410,7 +404,8 @@ const formatTimeTo24Hour = (time) => {
           <FaLeaf className="mr-2" /> สถานที่ท่องเที่ยวตามฤดูกาล
           {isSeasonDropdownOpen ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
         </button>
-        <button
+        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
             onClick={() => {
               resetTogglesAndSearch();
               setIsDistrictDropdownOpen(prev => (prev ? null : "district"));
@@ -422,7 +417,8 @@ const formatTimeTo24Hour = (time) => {
           </button>
 
      {/* Toggle for Day and Time Filter */}
-  <button
+  {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
     onClick={() => {
       resetTogglesAndSearch();
       setIsTimeFilterVisible((prev) => !prev);
@@ -436,7 +432,8 @@ const formatTimeTo24Hour = (time) => {
       {isCategoryDropdownOpen && (
   <div className="absolute z-10 w-full bg-white border border-orange-500 rounded-md shadow-lg mt-1">
     {filters.categories.map((category) => (
-      <button
+      // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
         key={category.id}
         className={`flex items-center w-full text-left py-2 px-4 text-sm space-x-2 ${
           searchParams.category === category.id
@@ -459,7 +456,8 @@ const formatTimeTo24Hour = (time) => {
 {isSeasonDropdownOpen && (
   <div className="absolute z-10 w-full bg-white border border-orange-500 rounded-md shadow-lg mt-1">
     {filters.seasons.map((season) => (
-      <button
+      // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
         key={season.id}
         className={`flex items-center w-full text-left py-2 px-4 text-sm space-x-2 ${
           searchParams.season === season.id
@@ -485,7 +483,8 @@ const formatTimeTo24Hour = (time) => {
 {isDistrictDropdownOpen && (
             <div className="absolute z-10 w-full bg-white border border-orange-500 rounded-md shadow-lg mt-1">
               {filters.districts.map((district) => (
-                <button
+                // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
                   key={district.id}
                   className={`block w-full text-left py-2 px-4 text-sm ${
                     searchParams.district === district.id
@@ -504,7 +503,8 @@ const formatTimeTo24Hour = (time) => {
         <div className="flex flex-col sm:flex-row justify-center items-center mb-4 space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="flex items-center space-x-2">
             <FaClock className="text-orange-500" />
-            <label className="text-orange-500 font-semibold">เลือกวัน:</label>
+            {/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+<label className="text-orange-500 font-semibold">เลือกวัน:</label>
             <select
               className="border border-orange-500 text-orange-500 rounded-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-orange-600"
               onChange={e => handleSearchByField("day_of_week", e.target.value)}
@@ -525,7 +525,8 @@ const formatTimeTo24Hour = (time) => {
 
           <div className="flex items-center space-x-2">
             <FaClock className="text-orange-500" />
-            <label className="text-orange-500 font-semibold">เวลาเปิด:</label>
+            {/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+<label className="text-orange-500 font-semibold">เวลาเปิด:</label>
             <input
               type="time"
               className="border border-orange-500 text-orange-500 rounded-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-orange-600"
@@ -538,7 +539,8 @@ const formatTimeTo24Hour = (time) => {
 
           <div className="flex items-center space-x-2">
             <FaClock className="text-orange-500" />
-            <label className="text-orange-500 font-semibold">เวลาปิด:</label>
+            {/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+<label className="text-orange-500 font-semibold">เวลาปิด:</label>
             <input
               type="time"
               className="border border-orange-500 text-orange-500 rounded-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-orange-600"
@@ -639,57 +641,88 @@ const formatTimeTo24Hour = (time) => {
           </div>
         )}
 
-        {/* Display search results using Slider */}
-        {searchResults.length > 0 && nearbyPlaces.length === 0 && (
+{searchResults.length > 0 && nearbyPlaces.length === 0 && (
   <div className="mb-8">
     <h2 className="text-2xl font-bold text-orange-500 mb-4">
-      ผลลัพธ์การค้นหา ({removeDuplicates(searchResults).length} สถานที่)
+      ผลลัพธ์การค้นหา ({searchResults.length} สถานที่)
     </h2>
 
-    {/* ตรวจสอบว่ามีเพียง 1 ผลลัพธ์ และแสดง card เดียว */}
-    {removeDuplicates(searchResults).length === 1 ? (
-      removeDuplicates(searchResults).map((place) => (
+    {searchResults.length === 1 ? (
+      searchResults.map((place) => (
         <Link href={`/place/${place.id}`} key={place.id}>
-          <div className="p-4 cursor-pointer">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out flex flex-col h-full max-w-sm mx-auto">
-              <Image
-                src={place.images && place.images[0]?.image_url ? place.images[0].image_url : "/default-image.jpg"}
-                alt={place.name}
-                width={500}
-                height={300}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold mb-2">{place.name}</h3>
+          <div className="p-4">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out h-96">
+              <div className="h-48 flex items-center justify-center bg-gray-200">
+                {place.images?.[0]?.image_url ? (
+                  <Image
+                    src={place.images[0].image_url}
+                    alt={place.name}
+                    width={500}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-gray-500 text-lg">ไม่มีรูปภาพ</span>
+                )}
+              </div>
+              <div className="p-4 flex flex-col h-48">
+                <h3 className="text-xl font-semibold mb-2 line-clamp-1">{place.name}</h3>
+                <p className="text-gray-600 text-sm sm:text-base line-clamp-2 flex-grow">
+                  {place.description}
+                </p>
+                {place.category_name === "สถานที่ท่องเที่ยว" && place.season_name && (
+                  <p className="text-orange-500 font-bold flex items-center mt-auto">
+                    {renderSeasonIcon(place.season_name)}
+                    {place.season_name}
+                  </p>
+                )}
+                <p className="text-orange-500 font-bold mt-2">{place.district_name}</p>
               </div>
             </div>
           </div>
         </Link>
       ))
     ) : (
-      <Slider {...settings}>
-        {removeDuplicates(searchResults).map((place) => (
+      <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={4000} arrows>
+        {searchResults.map((place) => (
           <Link href={`/place/${place.id}`} key={place.id}>
-            <div className="p-4 cursor-pointer">
-              <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out flex flex-col h-full">
-                <Image
-                  src={place.images && place.images[0]?.image_url ? place.images[0].image_url : "/default-image.jpg"}
-                  alt={place.name}
-                  width={500}
-                  height={300}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">{place.name}</h3>
+            <div className="p-4">
+              <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out h-96">
+                <div className="h-48 flex items-center justify-center bg-gray-200">
+                  {place.images?.[0]?.image_url ? (
+                    <Image
+                      src={place.images[0].image_url}
+                      alt={place.name}
+                      width={500}
+                      height={300}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-500 text-lg">ไม่มีรูปภาพ</span>
+                  )}
+                </div>
+                <div className="p-4 flex flex-col h-48">
+                  <h3 className="text-xl font-semibold mb-2 line-clamp-1">{place.name}</h3>
+                  <p className="text-gray-600 text-sm sm:text-base line-clamp-2 flex-grow">
+                    {place.description}
+                  </p>
+                  {place.category_name === "สถานที่ท่องเที่ยว" && place.season_name && (
+                    <p className="text-orange-500 font-bold flex items-center mt-auto">
+                      {renderSeasonIcon(place.season_name)}
+                      {place.season_name}
+                    </p>
+                  )}
+                  <p className="text-orange-500 font-bold text-end mt-2">{place.district_name}</p>
                 </div>
               </div>
             </div>
           </Link>
         ))}
-      </Slider>
+      </Carousel>
     )}
   </div>
 )}
+
       </div>
 
       {nearbyPlaces.length > 0 && searchResults.length === 0 && (
@@ -697,32 +730,46 @@ const formatTimeTo24Hour = (time) => {
     <h2 className="text-2xl font-bold text-orange-500 mb-4">
       สถานที่ใกล้เคียง ({nearbyPlaces.length} สถานที่)
     </h2>
-    <Slider {...settings}>
-      {removeDuplicates(nearbyPlaces).map((place) => (
+    <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={4000} arrows>
+      {nearbyPlaces.map((place) => (
         <Link href={`/place/${place.id}`} key={place.id}>
           <div className="p-4 cursor-pointer">
             <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out flex flex-col h-full">
-              <Image
-                src={place.images && place.images[0]?.image_url ? place.images[0].image_url : "/default-image.jpg"}
-                alt={place.name}
-                width={500}
-                height={300}
-                className="w-full h-48 object-cover"
-              />
+              <div className="h-48 flex items-center justify-center bg-gray-200">
+                {place.images?.[0]?.image_url ? (
+                  <Image
+                    src={place.images[0].image_url}
+                    alt={place.name}
+                    width={500}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-gray-500 text-lg">ไม่มีรูปภาพ</span>
+                )}
+              </div>
               <div className="p-4">
-                <h3 className="text-xl font-semibold mb-2">{place.name}</h3>
-                <p className="text-orange-500 font-bold flex items-center">
-                  <FaRoute className="mr-2" />
-                  ระยะห่าง {convertMetersToKilometers(place.distance)}
+                <h3 className="text-xl font-semibold mb-2 line-clamp-1">{place.name}</h3>
+                <p className="text-gray-600 text-sm sm:text-base line-clamp-2">
+                  {place.description}
                 </p>
+
+                {place.category_name === "สถานที่ท่องเที่ยว" && place.season_name && (
+                  <p className="text-orange-500 font-bold flex items-center mt-auto">
+                    {renderSeasonIcon(place.season_name)}
+                    {place.season_name}
+                  </p>
+                )}
+                <p className="text-orange-500 font-bold mt-2">{place.district_name}</p>
               </div>
             </div>
           </div>
         </Link>
       ))}
-    </Slider>
+    </Carousel>
   </div>
 )}
+
     </div>
   );
 };

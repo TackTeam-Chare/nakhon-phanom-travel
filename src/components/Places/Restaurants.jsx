@@ -98,7 +98,7 @@ const Restaurants = () => {
                 )}
                 <div className="p-3 flex flex-col justify-between flex-grow">
                   <div className="mb-2">
-                    <h3 className="text-base sm:text-lg font-semibold">
+                    <h3 className="text-base sm:text-lg font-semibold line-clamp-1">
                       {attraction.name}
                     </h3>
                     <p className="text-gray-600 text-sm sm:text-base line-clamp-4">

@@ -159,7 +159,7 @@ const NearbyPlaces = () => {
                   )}
                   <div className="p-4 flex-grow flex flex-col justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">
+                      <h3 className="text-lg font-semibold mb-2 line-clamp-1">
                         {place.name}
                       </h3>
                       <p className="text-gray-600 line-clamp-4">
