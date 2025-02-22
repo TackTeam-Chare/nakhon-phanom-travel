@@ -401,7 +401,7 @@ const formatTimeTo24Hour = (time) => {
           className={`border-2 border-orange-500 text-orange-500 rounded-full py-1 px-3 flex items-center justify-center ${!isSeasonEnabled ? "opacity-50 cursor-not-allowed" : ""}`}
           disabled={!isSeasonEnabled} // Disable if the season is not enabled
         >
-          <FaLeaf className="mr-2" /> สถานที่ท่องเที่ยวตามฤดูกาล
+          <FaLeaf className="mr-2" /> ฤดูกาล
           {isSeasonDropdownOpen ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
         </button>
         {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
@@ -412,7 +412,7 @@ const formatTimeTo24Hour = (time) => {
             }}
             className="border-2 border-orange-500 text-orange-500 rounded-full py-1 px-3 flex items-center justify-center"
           >
-            <FaMapMarkerAlt className="mr-2" /> เลือกอำเภอ
+            <FaMapMarkerAlt className="mr-2" /> อำเภอ
             {isDistrictDropdownOpen ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
           </button>
 
