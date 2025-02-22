@@ -14,17 +14,15 @@ import Layout from "@/components/layout";
 
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
-
+  const showChatbot = false;
   // Check if the current path is under the dashboard
   const isDashboard = pathname.startsWith("/dashboard");
 
   return (
     <>
-      {/* Conditional rendering based on the path */}
       {isDashboard ? children : <Layout>{children}</Layout>}
 
-      {/* Add the Chatbot component only on non-dashboard pages */}
-      {!isDashboard && <Chatbot />}
+      {showChatbot && !isDashboard && <Chatbot />}
     </>
   );
 }

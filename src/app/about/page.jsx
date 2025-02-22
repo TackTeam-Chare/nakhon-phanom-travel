@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function AboutPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,12 +20,10 @@ export default function AboutPage() {
   return (
     <div className="bg-orange-50 min-h-screen flex flex-col items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-xl p-8 max-w-3xl w-full border border-orange-200">
-        {/* Page Title */}
         <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-500 to-yellow-400 text-transparent bg-clip-text mb-10 text-center">
           เกี่ยวกับเรา
         </h1>
 
-        {/* Application Description */}
         <section className="mb-10">
           <h2 className="text-3xl font-semibold text-orange-600 mb-4">ชื่อเว็บ</h2>
           <p className="text-gray-700 mb-2">
@@ -35,14 +35,15 @@ export default function AboutPage() {
           </p>
         </section>
 
-        {/* Developer Section */}
         <section className="mb-10">
           <h2 className="text-3xl font-semibold text-orange-600 mb-4">พัฒนาโดย</h2>
           <div className="flex items-center mb-6">
-            <img
+            <Image
               src="/profile/developer-avatar.jpg"
               alt="Developer Avatar"
-              className="w-20 h-20 rounded-full mr-6 shadow-md cursor-pointer hover:scale-105 transition-transform"
+              width={80}
+              height={80}
+              className="rounded-full mr-6 shadow-md cursor-pointer hover:scale-105 transition-transform"
               onClick={() => openModal("/profile/developer-avatar.jpg")}
             />
             <div>
@@ -56,35 +57,34 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Advisor Section */}
         <section className="mb-10">
           <h2 className="text-3xl font-semibold text-orange-600 mb-4">อาจารย์ที่ปรึกษา</h2>
           <div className="flex items-center">
-            <img
+            <Image
               src="/profile/advisor-avatar.png"
               alt="Advisor Avatar"
-              className="w-20 h-20 rounded-full mr-6 shadow-md cursor-pointer hover:scale-105 transition-transform"
+              width={80}
+              height={80}
+              className="rounded-full mr-6 shadow-md cursor-pointer hover:scale-105 transition-transform"
               onClick={() => openModal("/profile/advisor-avatar.png")}
             />
             <p className="text-lg font-bold text-gray-800">ผู้ช่วยศาสตราจารย์วไลลักษณ์ วงษ์รื่น</p>
           </div>
         </section>
 
-        {/* Contact Section */}
         <section className="mb-10">
           <h2 className="text-3xl font-semibold text-orange-600 mb-4">ติดต่อผู้พัฒนา</h2>
           <p className="text-gray-700">
-            อีเมล:{" "}
-            <a
+            อีเมล: {" "}
+            <Link
               href="mailto:tackteam.dev@gmail.com"
               className="text-orange-600 hover:text-orange-700 hover:underline transition-all"
             >
               tackteam.dev@gmail.com
-            </a>
+            </Link>
           </p>
         </section>
 
-        {/* Note Section */}
         <section className="bg-orange-100 rounded-lg p-6 border-l-4 border-orange-600">
           <h2 className="text-xl font-semibold text-orange-600 mb-2">หมายเหตุ</h2>
           <p className="text-gray-700">
@@ -94,22 +94,26 @@ export default function AboutPage() {
         </section>
       </div>
 
-      {/* Modal for Enlarged Image */}
       {isModalOpen && (
-        <div
+        // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+<div
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
           onClick={closeModal}
         >
-          <div
+          {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+<div
             className="relative bg-white p-4 rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
+            <Image
               src={modalImageSrc}
               alt="Enlarged Avatar"
+              width={500}
+              height={500}
               className="max-w-full max-h-full rounded-lg"
             />
-            <button
+            {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
               onClick={closeModal}
               className="absolute top-2 right-2 text-gray-800 text-2xl bg-gray-200 rounded-full px-2 hover:bg-gray-300 transition-transform transform hover:scale-110"
             >

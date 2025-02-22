@@ -27,40 +27,32 @@ const responsive = {
 };
 
 const Accommodations = () => {
-  const [attractions, setAttractions] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [accommodations, setAccommodations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAttractions = async () => {
+    const fetchAccommodationsData = async () => {
       try {
         const data = await fetchAccommodations();
-        setAttractions(data);
+        setAccommodations(data);
       } catch (error) {
         console.error("Error fetching accommodations:", error);
       } finally {
-        setLoading(false); // ปิดสถานะ Loading เมื่อโหลดเสร็จ
+        setLoading(false);
       }
     };
 
-    fetchAttractions();
+    fetchAccommodationsData();
   }, []);
 
   if (loading) {
     return (
-      <div className="container mx-auto mt-10 mb-10 px-4 flex justify-center items-center h-[300px]">
-        <ClipLoader size={50} color={"#F97316"} loading={loading} />
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader color="#F97316" size={50} />
       </div>
     );
   }
 
-  // หากไม่มีข้อมูล
-  if (attractions.length === 0) {
-    return (
-      <div className="container mx-auto mt-10 mb-10 px-4 text-center">
-        <p className="text-gray-500 text-lg">ไม่มีข้อมูลที่พัก</p>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto mt-10 mb-10 px-4">
@@ -68,53 +60,47 @@ const Accommodations = () => {
         ที่พัก
       </h1>
       <div>
-        <Carousel
-          responsive={responsive}
-          swipeable={true}
-          infinite={true}
-          autoPlay={true}
-          autoPlaySpeed={3000}
-          containerClass="carousel-container"
-          itemClass="carousel-item-padding-20-px"
-        >
-          {attractions.map((attraction, index) => (
-            <Link
+          <Carousel
+            responsive={responsive}
+            swipeable={true}
+            infinite={true}
+            autoPlay={true}
+            autoPlaySpeed={3000}
+            containerClass="carousel-container"
+            itemClass="carousel-item-padding-20-px"
+          >
+            {accommodations.map((place, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-              key={index}
-              href={`/place/${attraction.id}`}
-              className="p-2 sm:p-3 block"
-            >
-              <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out flex flex-col h-full min-h-[350px] max-h-[400px]">
-                {attraction.image_url?.[0] ? (
-                  <Image
-                    src={attraction.image_url[0]}
-                    alt={attraction.name}
-                    width={300}
-                    height={200}
-                    className="rounded-t-lg object-cover w-full h-36 sm:h-40"
-                  />
-                ) : (
-                  <div className="w-full h-36 sm:h-40 bg-gray-200 flex items-center justify-center rounded-t-lg">
-                    <span className="text-gray-500">ไม่มีรูปภาพ</span>
-                  </div>
-                )}
-                <div className="p-3 flex flex-col justify-between flex-grow">
-                  <div className="mb-2">
-                    <h3 className="text-base sm:text-lg font-semibold">
-                      {attraction.name}
-                    </h3>
-                    <p className="text-gray-600 text-sm sm:text-base line-clamp-4">
-                      {attraction.description}
+<Link key={index} href={`/place/${place.id}`} className="p-2 sm:p-3 block">
+                <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-95 transition duration-300 ease-in-out flex flex-col h-full min-h-[350px] max-h-[400px]">
+                  {place.image_url?.[0] ? (
+                    <Image
+                      src={place.image_url[0]}
+                      alt={place.name}
+                      width={300}
+                      height={200}
+                      className="rounded-t-lg object-cover w-full h-36 sm:h-40"
+                    />
+                  ) : (
+                    <div className="w-full h-36 sm:h-40 bg-gray-200 flex items-center justify-center rounded-t-lg">
+                      <span className="text-gray-500">ไม่มีรูปภาพ</span>
+                    </div>
+                  )}
+                  <div className="p-3 flex flex-col justify-between flex-grow">
+                    <div className="mb-2">
+                      <h3 className="text-base sm:text-lg font-semibold">{place.name}</h3>
+                      <p className="text-gray-600 text-sm sm:text-base line-clamp-4">
+                        {place.description}
+                      </p>
+                    </div>
+                    <p className="text-orange-500 font-bold mt-1 text-sm sm:text-base">
+                      {place.district_name}
                     </p>
                   </div>
-                  <p className="text-orange-500 font-bold mt-1 text-sm sm:text-base">
-                    {attraction.district_name}
-                  </p>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </Carousel>
+              </Link>
+            ))}
+          </Carousel>
         <div className="flex justify-end mt-4">
           <Link
             href="/places/accommodations"

@@ -188,12 +188,12 @@ const PlaceNearbyPage = ({ params }) => {
           setTourismData(data.entity);
           setNearbyEntities(data.nearbyEntities);
 
-          if (!data.nearbyEntities || data.nearbyEntities.length === 0) {
-            Swal.fire("No Nearby Places", "ไม่พบสถานที่ใกล้เคียง", "info");
-          }
+          // if (!data.nearbyEntities || data.nearbyEntities.length === 0) {
+          //   Swal.fire("No Nearby Places", "ไม่พบสถานที่ใกล้เคียง", "info");
+          // }
         } catch (error) {
           console.error("Error fetching tourism data:", error);
-          Swal.fire("Error", "ไม่สามารถดึงข้อมูลได้ กรุณาลองใหม่อีกครั้ง", "error");
+          // Swal.fire("Error", "ไม่สามารถดึงข้อมูลได้ กรุณาลองใหม่อีกครั้ง", "error");
         }
       }
     };

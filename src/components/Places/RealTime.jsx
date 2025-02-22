@@ -88,7 +88,7 @@ const RealTimeSeasonalAttractions = () => {
                 )}
                 <div className="p-4 flex flex-col flex-grow justify-between">
                   <div className="flex-grow">
-                    <h3 className="text-lg font-semibold">{attraction.name}</h3>
+                    <h3 className="text-lg font-semibold line-clamp-1">{attraction.name}</h3>
                     <p className="text-gray-600 line-clamp-4">
                       {attraction.description}
                     </p>
