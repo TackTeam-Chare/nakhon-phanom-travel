@@ -7,7 +7,7 @@ import "react-multi-carousel/lib/styles.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useLoadScript } from "@react-google-maps/api";
-import ReviewSection from "@/components/ReviewSection"
+
 import {
   FaSun,
   FaCloudRain,
@@ -33,10 +33,8 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import { getNearbyFetchTourismData } from "@/services/user/api";
-import Swal from "sweetalert2";
 import { ClipLoader } from "react-spinners";
 import MapComponent from "@/components/Map/MapNearbyPlaces";
-import ReviewForm from "@/components/ReviewModal";
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const responsive = {
@@ -442,14 +440,6 @@ const PlaceNearbyPage = ({ params }) => {
           </div>
         ))}
       </Carousel>
-      <ReviewForm place={tourismData} />
-{reviews.length > 0 && (
-  <ReviewSection
-    rating={rating}
-    totalReviews={totalReviews}
-    reviews={reviews}
-  />
-)}
 
     </div>
   );
