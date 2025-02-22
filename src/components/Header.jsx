@@ -153,90 +153,70 @@ export default function Header() {
             </button>
           </div>
           <div className="mt-6 space-y-4">
-            {[
-              { href: "/", icon: HomeIcon, text: "หน้าเเรก" },
-              {
-                href: "/search",
-                icon: MagnifyingGlassIcon,
-                text: "ค้นหาสถานที่"
-              }
-            ].map((item, index) => (
-              <Link
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                key={index}
-                href={item.href}
-                className="flex items-center text-lg text-white hover:bg-orange-600 rounded-md px-4 py-2 transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                <item.icon className="h-5 w-5 mr-2" />
-                {item.text}
-              </Link>
-            ))}
-            <Disclosure as="div">
-            <Disclosure.Button className="group flex w-full items-start  justify-start rounded-lg py-2 px-4 text-lg hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105">
-  <MapIcon className="h-5 w-5 mr-2" />
-  สถานที่
-  <ChevronDownIcon className="h-5 w-5 mr-2 group-data-[open]:rotate-180 transition duration-300 ease-in-out" />
-</Disclosure.Button>
+          {[
+  { href: "/", icon: HomeIcon, text: "หน้าเเรก" },
+  { href: "/search", icon: MagnifyingGlassIcon, text: "ค้นหาสถานที่" }
+].map((item, index) => (
+  <Link
+    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+    key={index}
+    href={item.href}
+    onClick={() => setMobileMenuOpen(false)} // Close menu on click
+    className="flex items-center text-lg text-white hover:bg-orange-600 rounded-md px-4 py-2 transition duration-300 ease-in-out transform hover:scale-105"
+  >
+    <item.icon className="h-5 w-5 mr-2" />
+    {item.text}
+  </Link>
+))}
 
-              <Disclosure.Panel className="mt-2 space-y-2">
-                {[
-                  {
-                    href: "/places/season-real-time",
-                    icon: SunIcon,
-                    text: "ฤดูกาลนี้"
-                  },
-                  {
-                    href: "/places",
-                    icon: BuildingOfficeIcon,
-                    text: "สถานที่ทั้งหมด"
-                  },
-                  {
-                    href: "/places/tourist-attractions",
-                    icon: SunIcon,
-                    text: "สถานที่ท่องเที่ยว"
-                  },
-                  {
-                    href: "/places/accommodations",
-                    icon: BuildingStorefrontIcon,
-                    text: "ที่พัก"
-                  },
-                  {
-                    href: "/places/restaurants",
-                    icon: GiftIcon,
-                    text: "ร้านอาหาร"
-                  },
-                  {
-                    href: "/places/souvenir-shops",
-                    icon: ShoppingBagIcon,
-                    text: "ร้านค้าของฝาก"
-                  }
-                ].map((item, index) => (
-                  <Link
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                    key={index}
-                    href={item.href}
-                    className="flex items-center rounded-lg py-2 px-4 hover:bg-orange-600 hover:text-white transition duration-300 ease-in-out transform hover:scale-105"
-                  >
-                    <item.icon className="h-5 w-5 mr-2" />
-                    {item.text}
-                  </Link>
-                ))}
-              </Disclosure.Panel>
-            </Disclosure>
-            <Link
-              href="/auth/login"
-              className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
-            >
-              <UserIcon className="h-5 w-5 mr-2" />
-              เข้าสู่ระบบ
-            </Link>
-            <Link
-              href="/about"
-              className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
-            >
-              <InformationCircleIcon className="h-5 w-5 mr-2" />
-              เกี่ยวกับ
-            </Link>
+<Disclosure as="div">
+  <Disclosure.Button className="group flex w-full items-start justify-start rounded-lg py-2 px-4 text-lg hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105">
+    <MapIcon className="h-5 w-5 mr-2" />
+    สถานที่
+    <ChevronDownIcon className="h-5 w-5 mr-2 group-data-[open]:rotate-180 transition duration-300 ease-in-out" />
+  </Disclosure.Button>
+
+  <Disclosure.Panel className="mt-2 space-y-2">
+    {[
+      { href: "/places/season-real-time", icon: SunIcon, text: "ฤดูกาลนี้" },
+      { href: "/places", icon: BuildingOfficeIcon, text: "สถานที่ทั้งหมด" },
+      { href: "/places/tourist-attractions", icon: SunIcon, text: "สถานที่ท่องเที่ยว" },
+      { href: "/places/accommodations", icon: BuildingStorefrontIcon, text: "ที่พัก" },
+      { href: "/places/restaurants", icon: GiftIcon, text: "ร้านอาหาร" },
+      { href: "/places/souvenir-shops", icon: ShoppingBagIcon, text: "ร้านค้าของฝาก" }
+    ].map((item, index) => (
+      <Link
+        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+        key={index}
+        href={item.href}
+        onClick={() => setMobileMenuOpen(false)} // Close menu on click
+        className="flex items-center rounded-lg py-2 px-4 hover:bg-orange-600 hover:text-white transition duration-300 ease-in-out transform hover:scale-105"
+      >
+        <item.icon className="h-5 w-5 mr-2" />
+        {item.text}
+      </Link>
+    ))}
+  </Disclosure.Panel>
+</Disclosure>
+
+<Link
+  href="/auth/login"
+  onClick={() => setMobileMenuOpen(false)} // Close menu on click
+  className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
+>
+  <UserIcon className="h-5 w-5 mr-2" />
+  เข้าสู่ระบบ
+</Link>
+
+<Link
+  href="/about"
+  onClick={() => setMobileMenuOpen(false)} // Close menu on click
+  className="flex items-center text-lg hover:text-white text-white border border-white-500 bg-transparent hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg px-3 py-2"
+>
+  <InformationCircleIcon className="h-5 w-5 mr-2" />
+  เกี่ยวกับ
+</Link>
+
           </div>
         </Dialog.Panel>
       </Dialog>
