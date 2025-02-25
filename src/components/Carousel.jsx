@@ -5,13 +5,26 @@ import Image from "next/image";
 import Link from "next/link";
 import ClipLoader from "react-spinners/ClipLoader";
 import "react-multi-carousel/lib/styles.css";
-import Carousel from "react-multi-carousel"; // ✅ ใช้ react-multi-carousel
+import Carousel from "react-multi-carousel";
 import { fetchTouristAttractions } from "@/services/api/api";
 import { MapPin, Landmark } from "lucide-react";
 
 const TouristCarousel = () => {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // เรียกครั้งแรกเพื่อเช็กขนาดหน้าจอเมื่อ component mount
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchPlaces = async () => {
@@ -19,28 +32,14 @@ const TouristCarousel = () => {
       setPlaces(data);
       setLoading(false);
     };
-
     fetchPlaces();
   }, []);
 
-  // ✅ react-multi-carousel settings
   const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 1024 },
-      items: 1,
-    },
-    desktop: {
-      breakpoint: { max: 1024, min: 768 },
-      items: 1,
-    },
-    tablet: {
-      breakpoint: { max: 768, min: 464 },
-      items: 1,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
+    superLargeDesktop: { breakpoint: { max: 4000, min: 1024 }, items: 1 },
+    desktop: { breakpoint: { max: 1024, min: 768 }, items: 1 },
+    tablet: { breakpoint: { max: 768, min: 464 }, items: 1 },
+    mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
   };
 
   return (
@@ -55,11 +54,15 @@ const TouristCarousel = () => {
           infinite={true}
           autoPlay={true}
           autoPlaySpeed={3000}
-          arrows={true}
+          arrows={!isMobile}
           showDots={true}
         >
           {places.map((place) => (
-            <Link key={place.placeId} href={`/places/tourist-attractions/${place.placeId}`} passHref>
+            <Link
+              key={place.placeId}
+              href={`/places/tourist-attractions/${place.placeId}`}
+              passHref
+            >
               <div className="relative w-full h-[70vh] md:h-[80vh] lg:h-[90vh] overflow-hidden cursor-pointer">
                 {place.thumbnailUrl ? (
                   <Image

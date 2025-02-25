@@ -22,7 +22,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-orange-500 text-white shadow-md p-4">
+    <header className="sticky top-0 z-50 bg-orange-500 text-white shadow-md p-4">
       <div className="container mx-auto flex justify-between items-center px-4 md:px-8">
          {/* Logo Section */}
          <div className="flex items-center space-x-4 md:space-x-10">
