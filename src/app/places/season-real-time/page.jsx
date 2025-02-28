@@ -138,7 +138,8 @@ const RealTimeSeasonalAttractions = () => {
                   </div>
                 )}
                   <div className="p-4 flex-grow flex flex-col">
-                    <h3 className="text-xl font-semibold">{attraction.name}</h3>
+                    <h3 className="text-xl font-semibold line-clamp-1">{attraction.name}</h3>
+                    <p className="text-gray-600 mb-4 line-clamp-3">{attraction.description}</p>
                     <p className="text-orange-500 font-bold mb-2">
                       {attraction.district_name}
                     </p>
@@ -162,7 +163,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
 
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex flex-wrap justify-center mt-8 space-x-2 gap-2">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}

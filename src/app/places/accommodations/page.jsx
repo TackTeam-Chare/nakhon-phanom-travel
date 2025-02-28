@@ -122,13 +122,12 @@ const AccommodationsPage = () => {
                 </div>
               )}
               <div className="p-4 flex-grow flex flex-col">
-                <h2 className="text-xl font-semibold mb-2">
+                <h2 className="text-xl font-semibold mb-2 line-clamp-1">
                   {accommodation.name}
                 </h2>
-                <p className="text-gray-600 flex-grow">
+                <p className="text-gray-600 flex-grow line-clamp-3">
                   {accommodation.description}
                 </p>
-                {/* Display season name */}
                 <p className="text-orange-500 font-bold mt-2">
                   {accommodation.season_name}
                 </p>
@@ -158,7 +157,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
 
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex flex-wrap justify-center mt-8 space-x-2 gap-2">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}

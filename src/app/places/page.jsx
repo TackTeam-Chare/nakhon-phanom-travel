@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import {
+  FaChevronRight,
+} from "react-icons/fa";
 import { getAllFetchTouristEntities, fetchDistricts, searchByDistrict } from "@/services/user/api"
 
 const TouristAttractionsPage = () => {
@@ -110,15 +113,19 @@ const TouristAttractionsPage = () => {
                 </div>
               )}
               <div className="flex-grow mt-4">
-                <h2 className="text-xl font-bold mb-2 text-orange-500">{attraction.name}</h2>
-                <p className="text-gray-600 mb-4">{attraction.description}</p>
+                <h2 className="text-xl font-bold mb-2 text-orange-500 line-clamp-1">{attraction.name}</h2>
+                <p className="text-gray-600 mb-4 line-clamp-3">{attraction.description}</p>
               </div>
+                   <div className="flex justify-end mt-4">
+                                <p className="text-orange-500 font-bold flex items-center">
+                                  อ่านต่อ... <FaChevronRight className="ml-2" />
+                                </p>
+                              </div>
             </div>
           </Link>
         ))}
       </div>
 
-      {/* แสดง Pagination */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -132,7 +139,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
 
   return (
-    <div className="flex flex-wrap justify-center mt-8 space-x-2">
+    <div className="flex flex-wrap justify-center mt-8 space-x-2 gap-2">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}

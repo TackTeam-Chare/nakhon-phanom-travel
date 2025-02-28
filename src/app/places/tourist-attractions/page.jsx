@@ -123,12 +123,11 @@ const TouristAttractionsPage = () => {
                   <span className="text-gray-500">ไม่มีรูปภาพ</span>
                 </div>
               )}
-              {/* Adding padding around text content */}
               <div className="p-4 flex flex-col flex-grow">
-                <h2 className="text-xl font-semibold mb-2">
+                <h2 className="text-xl font-semibold mb-2 line-clamp-1">
                   {attraction.name}
                 </h2>
-                <p className="text-gray-600 mb-4">{attraction.description}</p>
+                <p className="text-gray-600 mb-4 line-clamp-3">{attraction.description}</p>
                 <p className="text-orange-500 font-bold flex items-center">
                   {attraction.season_name}
                 </p>
@@ -158,7 +157,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
 
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex flex-wrap justify-center mt-8 space-x-2 gap-2">
       {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 <button
         onClick={() => onPageChange(currentPage - 1)}

@@ -59,8 +59,8 @@ const EventsPage = () => {
                 </div>
               )}
               <div className="p-4 flex-grow flex flex-col">
-                <h2 className="text-xl font-semibold mb-2">{event.name}</h2>
-                <p className="text-gray-600 flex-grow">{event.introduction}</p>
+                <h2 className="text-xl font-semibold mb-2 line-clamp-1">{event.name}</h2>
+                <p className="text-gray-600 flex-grow line-clamp-3">{event.introduction}</p>
                 <p className="text-orange-500 font-bold mt-2">
                   {event.province}
                 </p>
@@ -89,7 +89,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex flex-wrap justify-center mt-8 space-x-2 gap-2">
       {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 <button
         onClick={() => onPageChange(currentPage - 1)}

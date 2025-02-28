@@ -18,15 +18,15 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="bg-orange-50 min-h-screen flex flex-col items-center justify-center p-6">
-      <div className="bg-white rounded-3xl shadow-xl p-8 max-w-3xl w-full border border-orange-200">
+    <div className=" min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="bg-orange-50 rounded-3xl shadow-xl p-8 max-w-3xl w-full border border-orange-200">
         <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-500 to-yellow-400 text-transparent bg-clip-text mb-10 text-center">
           เกี่ยวกับเรา
         </h1>
 
         <section className="mb-10">
           <h2 className="text-3xl font-semibold text-orange-600 mb-4">ชื่อเว็บ</h2>
-          <p className="text-gray-700 mb-2">
+          <p className="text-gray-700 mb-2 ">
             <span className="font-semibold">ภาษาไทย:</span> เว็บแอปพลิเคชันแนะนำการท่องเที่ยวและร้านค้าในบริเวณใกล้เคียง
             สถานที่ท่องเที่ยวในจังหวัดนครพนม
           </p>
